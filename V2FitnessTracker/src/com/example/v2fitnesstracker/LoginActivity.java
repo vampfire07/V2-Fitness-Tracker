@@ -4,14 +4,14 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.support.v4.app.NavUtils;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity{
 	
-	public final static String EXTRA_MESSAGE = "com.example.v2fitnesstracker.MESSAGE";
+	public final static String USERNAME_PACKAGE = "com.example.v2fitnesstracker.USERNAME";
+	public final static String PASSWORD_PACKAGE = "com.example.v2fitnesstracker.PASSWORD";
+	
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,14 +25,22 @@ public class LoginActivity extends Activity {
         return true;
     }
 
-    public void sendMessage(View view) {
+    public void login(View view) {
     	// An Intent to start an activity called HomeActivity
-    	Intent goToHome = new Intent(this, HomeActivity.class);
+    	Intent loginIntent = new Intent(this, HomeActivity.class);
     	
-    	// findViewById() to get the EditText element and add its message to the intent
-    	EditText editText = (EditText) findViewById(R.id.edit_message);
-    	String message = editText.getText().toString();
-    	goToHome.putExtra(EXTRA_MESSAGE, message);
-    	startActivity(goToHome);
+    	// findViewById() to get the EditText username element and add its content to the intent
+    	EditText usernameText = (EditText) findViewById(R.id.username_input);
+    	String username = usernameText.getText().toString();
+    	loginIntent.putExtra(USERNAME_PACKAGE, username);
+    	
+    	// findViewById() to get the EditText password element and add its content to the intent
+    	EditText passwordText = (EditText) findViewById(R.id.password_input);
+    	String password = passwordText.getText().toString();
+    	loginIntent.putExtra(PASSWORD_PACKAGE, password);
+    	
+    	// Finishes this Activity and starts a new one
+    	finish();
+    	startActivity(loginIntent);
     }
 }

@@ -3,8 +3,11 @@ package com.example.v2fitnesstracker;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
@@ -17,14 +20,22 @@ public class HomeActivity extends Activity {
         // Get the Intent that started this Activity
         Intent intent = getIntent();
         // Get the message from that Intent
-        String message = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
+        String username = intent.getStringExtra(LoginActivity.USERNAME_PACKAGE);
+        String password = intent.getStringExtra(LoginActivity.PASSWORD_PACKAGE);        
         
-        // Create the TextView
         TextView userDisplay = new TextView(this);
         userDisplay.setTextSize(20);
-        userDisplay.setText("Welcome, " + message + "!");
+        userDisplay.setText("Welcome, " + username + "!");
         
-        setContentView(userDisplay);
+        TextView passwordDisplay = new TextView(this);
+        passwordDisplay.setText("Password: " + password);
+        
+        // Create a horizontal LinearLayout and add the Views to it
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(userDisplay);
+        layout.addView(passwordDisplay);
+        setContentView(layout);
     }
 
     @Override
