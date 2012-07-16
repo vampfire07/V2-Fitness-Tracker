@@ -1,43 +1,48 @@
 package com.example.v2fitnesstracker;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
-public class LoginActivity extends Activity{
+public class RegistrationActivity extends Activity {
 	
 	public final static String USERNAME_PACKAGE = "com.example.v2fitnesstracker.USERNAME";
 	public final static String PASSWORD_PACKAGE = "com.example.v2fitnesstracker.PASSWORD";
-	
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_registration);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_login, menu);
+        getMenuInflater().inflate(R.menu.activity_registration, menu);
         return true;
     }
-
-    public void login(View view) {
+    
+    public void back(View view) {
+    	Intent backToLogin = new Intent(this, LoginActivity.class);
+    	finish();
+    	startActivity(backToLogin);
+    }
+    
+    public void register(View view) {
     	// An Intent to start an activity called HomeActivity
     	Intent loginIntent = new Intent(this, HomeActivity.class);
     	
     	// findViewById() to get the EditText username element and add its content to the intent
-    	EditText usernameText = (EditText) findViewById(R.id.username_input);
+    	EditText usernameText = (EditText) findViewById(R.id.user_username);
     	String username = usernameText.getText().toString();
     	loginIntent.putExtra(USERNAME_PACKAGE, username);
     	
     	// findViewById() to get the EditText password element and add its content to the intent
-    	EditText passwordText = (EditText) findViewById(R.id.password_input);
+    	EditText passwordText = (EditText) findViewById(R.id.user_password);
     	String password = passwordText.getText().toString();
     	loginIntent.putExtra(PASSWORD_PACKAGE, password);
     	
@@ -70,9 +75,4 @@ public class LoginActivity extends Activity{
     	startActivity(loginIntent);
     }
     
-    public void register(View view) {
-    	Intent registerIntent = new Intent(this, RegistrationActivity.class);
-    	finish();
-    	startActivity(registerIntent);
-    }
 }

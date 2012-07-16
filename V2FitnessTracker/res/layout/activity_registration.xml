@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".RegistrationActivity" 
     android:fillViewport="true">
 	<RelativeLayout android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:background="#46e400">
+	    
 	    <!-- Header -->
 	    <LinearLayout android:id="@+id/header"
 	        android:layout_width="match_parent"
@@ -20,6 +22,7 @@
 	    	<!-- Logo ends -->
 	    </LinearLayout>
 	    <!-- Header ends -->
+	    
 	    <!-- Footer -->
 	    <LinearLayout android:id="@+id/footer"
 	        android:layout_width="match_parent"
@@ -28,34 +31,41 @@
 	        android:layout_alignParentBottom="true">
 	    </LinearLayout>
 	    <!-- Footer ends -->
+	    
 	    <!-- Login Form -->
 	    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
           android:orientation="vertical"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_below="@id/header">
+	    	
+	        <!-- Please fill in with your information" notice -->
+	    	<TextView android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+      		android:text="@string/registration_notice"/>
+    	
 	    	<!-- Username -->
-	    	<EditText android:id="@+id/username_input" 
-	    	    android:layout_width="match_parent"
-	    	    android:layout_height="wrap_content"
-	    	    android:singleLine="true"
-	    	    android:inputType="textNoSuggestions"
-	    	    android:hint="@string/username_hint"/>
+	        <TextView android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:text="@string/registration_username"/>
+	    
+	    	<EditText android:id="@+id/user_username"
+	        android:inputType="textNoSuggestions"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:hint="@string/username_hint"/>
+	    	
 	    	<!-- Password -->
-	    	<EditText android:id="@+id/password_input"
-	    	    android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dip"
-                android:singleLine="true"
-                android:inputType="textPassword"
-                android:hint="@string/password_hint"/>
-	    	<!-- Login Button -->
-	    	<Button android:id="@+id/login_button"
-	    	    android:layout_width="match_parent"
-	    	    android:layout_height="wrap_content"
-	    	    android:layout_marginTop="10dip"
-	    	    android:text="@string/login"
-	    	    android:onClick="login"/>
+	    	<TextView android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:text="@string/registration_password"/>
+	    
+	    	<EditText android:id="@+id/user_password"
+	        android:inputType="textPassword"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:hint="@string/password_hint"/>
+	    	
 	    	<!-- Register Button -->
 	    	<Button android:id="@+id/register_button"
 	    	    android:layout_width="match_parent"
@@ -63,10 +73,17 @@
 	    	    android:layout_marginTop="10dip"
 	    	    android:text="@string/register"
 	    	    android:onClick="register"/>
+	    	<!-- Back Button -->
+	    	<Button android:layout_width="match_parent"
+	    	    android:layout_height="wrap_content"
+	    	    android:layout_marginTop="10dip"
+	    	    android:text="@string/back"
+	    	    android:onClick="back"/>
 	    </LinearLayout>
 	    
 	</RelativeLayout>
 	
 	
 </ScrollView>
+
 

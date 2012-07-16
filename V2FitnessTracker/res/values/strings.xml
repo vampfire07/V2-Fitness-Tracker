@@ -10,5 +10,15 @@
     <string name="welcome">Welcome, user!</string>
     <string name="password_hint">Password</string>
     <string name="logo_description">Logo</string>
-	
+    <string name="title_section3">Section 3</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_activity_registration">Registration</string>
+    <string name="registration_notice">Please fill in with your information.</string>
+    <string name="registration_username">Username</string>
+    <string name="registration_password">Password</string>
+    <string name="register">Register</string>
+    <string name="back">Back</string>
+    <string name="title_activity_login_test">LoginTest</string>
+
 </resources>
