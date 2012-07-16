@@ -1,3 +1,12 @@
-<com.example.v2fitnesstracker.HomeActivity>
+<LinearLayout android:id="@+id/home"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+	    
+	<include android:id="@+id/login_layout"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    layout="@layout/logo">    
+	</include>
 	
-</com.example.v2fitnesstracker.HomeActivity>
+</LinearLayout>

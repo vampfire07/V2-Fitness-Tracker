@@ -3,13 +3,11 @@ package com.example.v2fitnesstracker;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.GradientDrawable.Orientation;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.support.v4.app.NavUtils;
 
 public class HomeActivity extends Activity {
 
@@ -23,6 +21,10 @@ public class HomeActivity extends Activity {
         String username = intent.getStringExtra(LoginActivity.USERNAME_PACKAGE);
         String password = intent.getStringExtra(LoginActivity.PASSWORD_PACKAGE);        
         
+        ImageView logo = new ImageView(this);
+        logo.setImageResource(R.drawable.logo);
+        logo.setScaleType(ScaleType.FIT_XY);
+        
         TextView userDisplay = new TextView(this);
         userDisplay.setTextSize(20);
         userDisplay.setText("Welcome, " + username + "!");
@@ -33,6 +35,7 @@ public class HomeActivity extends Activity {
         // Create a horizontal LinearLayout and add the Views to it
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(logo);
         layout.addView(userDisplay);
         layout.addView(passwordDisplay);
         setContentView(layout);

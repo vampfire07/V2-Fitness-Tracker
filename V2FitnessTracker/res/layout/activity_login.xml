@@ -16,10 +16,7 @@
 	        android:paddingTop="5dip"
 	        android:paddingBottom="5dip">
 	    	<!-- Logo -->
-	    	<ImageView android:src="@drawable/logo"
-	    	    android:layout_width="match_parent"
-	    	    android:layout_height="wrap_content"
-	    	    android:contentDescription="@string/logo_description"/>
+	    	<include layout="@layout/logo"></include>
 	    	<!-- Logo ends -->
 	    </LinearLayout>
 	    <!-- Header ends -->
