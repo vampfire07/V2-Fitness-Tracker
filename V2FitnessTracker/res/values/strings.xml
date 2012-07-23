@@ -20,5 +20,8 @@
     <string name="register">Register</string>
     <string name="back">Back</string>
     <string name="title_activity_login_test">LoginTest</string>
+    <string name="title_activity_exercise">Exercise</string>
+    <string name="title_activity_nutrition">Nutrition</string>
+    <string name="title_activity_journal">Journal</string>
 
 </resources>

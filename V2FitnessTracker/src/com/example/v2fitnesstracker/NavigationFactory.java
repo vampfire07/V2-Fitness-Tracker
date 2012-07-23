@@ -36,13 +36,13 @@ public class NavigationFactory {
 				navigateIntent = new Intent(context, HomeActivity.class);
 				break;
 			case EXERCISE:
-				navigateIntent = new Intent(context, HomeActivity.class);
+				navigateIntent = new Intent(context, ExerciseActivity.class);
 				break;
 			case NUTRITION:
-				navigateIntent = new Intent(context, HomeActivity.class);
+				navigateIntent = new Intent(context, NutritionActivity.class);
 				break;
 			case JOURNAL:
-				navigateIntent = new Intent(context, HomeActivity.class);
+				navigateIntent = new Intent(context, JournalActivity.class);
 				break;
 			case LOGIN:
 				navigateIntent = new Intent(context, LoginActivity.class);
@@ -63,7 +63,6 @@ public class NavigationFactory {
 		return home;
 	}
 	
-	// TO-DO: change parameter of navigate to their own respective classes
 	private Button createExerciseButton() {
 		Button exercise = new Button(context);
 		exercise.setTextSize(10);
@@ -76,7 +75,6 @@ public class NavigationFactory {
 		return exercise;
 	}
 	
-	// TO-DO: change parameter of navigate to their own respective classes
 	private Button createNutritionButton() {
 		Button nutrition = new Button(context);
 		nutrition.setTextSize(10);
@@ -89,7 +87,6 @@ public class NavigationFactory {
 		return nutrition;
 	}
 	
-	// TO-DO: change parameter of navigate to their own respective classes
 	private Button createJournalButton() {
 		Button journal = new Button(context);
 		journal.setTextSize(10);

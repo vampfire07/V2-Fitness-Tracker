@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements V2Activity {
 	
 	private EditText age;
 	private EditText height_feet;
@@ -31,9 +31,7 @@ public class HomeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
         setPageView();
-        
     }
     
     // Updates the user information (age, weight, goal weight, height)
@@ -50,29 +48,14 @@ public class HomeActivity extends Activity {
     	}
     }
     
-    // Creates the overall layout of the page, adds all the View to it, and sets it as the page content
-    private void setPageView() {
-    	ScrollView overallLayout = new ScrollView(this);
-    	LinearLayout linearOverallLayout = createLinearLayout(LinearLayout.VERTICAL);
-    	View[] views = new View[] { new NavigationFactory(this).createNavigationButtons(), createContentLayout() };
-    	addViewsToLayout(views, linearOverallLayout);
-    	overallLayout.addView(linearOverallLayout);
-        setContentView(overallLayout);
-    }
-    
-    private LinearLayout createContentLayout() {
-    	LinearLayout contentLayout = (LinearLayout) createLinearLayout(LinearLayout.VERTICAL);
-    	View[] views = new View[] { createCredentialsView(), createUserInfoView(), createBMIView() };
-    	addViewsToLayout(views, contentLayout);
-    	return contentLayout;
-    }
-    
+    // Calculates the user's BMI based on weight and height, then displays the result in a text field.
     private void calculateBMI() {
     	double index = calculateBMIIndex();
     	_BMIIndex.setText(index + "");
     	_BMIClassification.setText(calculateBMIClassification(index));
     }
     
+    // Calculates BMI Index and returns the result in one decimal place.
     private double calculateBMIIndex() {
     	double index = 0;
     	if(_BMIIndex != null) {
@@ -84,6 +67,7 @@ public class HomeActivity extends Activity {
     	return index;
     }
     
+    // Categorizes BMI Classification based on the BMI Index and returns the result as a String.
     private String calculateBMIClassification(double index) {
     	String classification = "";
     	if(_BMIClassification != null) {
@@ -94,10 +78,67 @@ public class HomeActivity extends Activity {
     	}
     	return classification;
     }
+    
+    public ImageView createLogo() {
+    	return createImageView(R.drawable.logo, ScaleType.FIT_XY);
+    }
+    
+    // Adds the View elements in the array into the layout
+    public void addViewsToLayout(View[] views, ViewGroup layout) {
+    	if(views != null && layout != null) {
+    		for(View v : views) layout.addView(v);
+    	}
+    }
+
+    // Creates a View and returns that created View. 
+    public LinearLayout createLinearLayout(int orientation) {
+    	LinearLayout view = new LinearLayout(this);
+    	view.setOrientation(orientation);
+    	return view;
+    }
+    
+    // Creates a View and returns that created View. 
+    public ImageView createImageView(int imageResource, ImageView.ScaleType scaleType) {
+    	ImageView view = new ImageView(this);
+    	view.setImageResource(imageResource);
+    	view.setScaleType(scaleType);
+    	return view;
+    }
+    
+    // Shows an error with the message passed in the parameter 
+    public void showErrorMessage(String message) {
+    	AlertDialog ad = new AlertDialog.Builder(this).create();
+		ad.setCancelable(true);
+		ad.setMessage(message);
+		ad.show();
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_home, menu);
+        return true;
+    }
+    
+ // Creates the overall layout of the page, adds all the View to it, and sets it as the page content
+    public void setPageView() {
+    	ScrollView overallLayout = new ScrollView(this);
+    	LinearLayout linearOverallLayout = createLinearLayout(LinearLayout.VERTICAL);
+    	View[] views = new View[] { createLogo(), new NavigationFactory(this).createNavigationButtons(), createContentLayout() };
+    	addViewsToLayout(views, linearOverallLayout);
+    	overallLayout.addView(linearOverallLayout);
+        setContentView(overallLayout);
+    }
+    
+    private LinearLayout createContentLayout() {
+    	LinearLayout contentLayout = (LinearLayout) createLinearLayout(LinearLayout.VERTICAL);
+    	View[] views = new View[] { createCredentialsView(), createUserInfoView(), createBMIView() };
+    	addViewsToLayout(views, contentLayout);
+    	return contentLayout;
+    }
    
     private LinearLayout createBMIView() {
     	LinearLayout BMILayout = (LinearLayout) createLinearLayout(LinearLayout.VERTICAL);
-    	TextView BMIDisplay = (TextView) createText(Views.TEXTVIEW, 20, "BMI", "");
+    	TextView BMIDisplay = ActivityFactory.createTextView(this, 20, "BMI");
     	Button calculateButton = new Button(this);
     	calculateButton.setText("Calculate");
     	calculateButton.setOnClickListener(new OnClickListener() {
@@ -111,8 +152,8 @@ public class HomeActivity extends Activity {
     }
     
     private LinearLayout createBMIIndexView() {
-    	TextView indexDisplay = (TextView) createText(Views.TEXTVIEW, 15, "Index: ", "");
-    	_BMIIndex = (EditText) createText(Views.EDITTEXT, 15, "", "");
+    	TextView indexDisplay = ActivityFactory.createTextView(this, 15, "Index: ");
+    	_BMIIndex = ActivityFactory.createEditText(this, 15, "");
     	_BMIIndex.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
     	// Makes the EditText non-editable.
     	_BMIIndex.setKeyListener(null);
@@ -123,8 +164,8 @@ public class HomeActivity extends Activity {
     }
     
     private LinearLayout createBMIClassificationView() {
-    	TextView classificationDisplay = (TextView) createText(Views.TEXTVIEW, 15, "Classification:", "");
-    	_BMIClassification = (EditText) createText(Views.EDITTEXT, 15, "", "");
+    	TextView classificationDisplay = ActivityFactory.createTextView(this, 15, "Classification:");
+    	_BMIClassification = ActivityFactory.createEditText(this, 15, "");
     	View[] views = new View[] { classificationDisplay, _BMIClassification };
     	LinearLayout BMIClassificationLayout = createLinearLayout(LinearLayout.HORIZONTAL);
     	addViewsToLayout(views, BMIClassificationLayout);
@@ -146,10 +187,10 @@ public class HomeActivity extends Activity {
     }
     
     private LinearLayout createGoalWeightView() {
-    	TextView goalWeightDisplay = (TextView) createText(Views.TEXTVIEW, 15, "Goal Weight: ", "");
-    	goal_weight = (EditText) createText(Views.EDITTEXT, 15, User.getGoal_weight() + "", "");
+    	TextView goalWeightDisplay = ActivityFactory.createTextView(this, 15, "Goal Weight: ");
+    	goal_weight = ActivityFactory.createEditText(this, 15, "");
     	goal_weight.setInputType(InputType.TYPE_CLASS_NUMBER);
-    	TextView lbsDisplay = (TextView) createText(Views.TEXTVIEW, 15, "lbs.", "");
+    	TextView lbsDisplay = ActivityFactory.createTextView(this, 15, "lbs.");
     	View[] views = new View[] { goalWeightDisplay, goal_weight, lbsDisplay };
     	
     	LinearLayout goalWeightLayout = (LinearLayout) createLinearLayout(LinearLayout.HORIZONTAL);
@@ -158,10 +199,10 @@ public class HomeActivity extends Activity {
     }
     
     private LinearLayout createWeightView() {
-    	TextView weightDisplay = (TextView) createText(Views.TEXTVIEW, 15, "Weight: ", "");
-    	weight = (EditText) createText(Views.EDITTEXT, 15, User.getWeight() + "", "");
+    	TextView weightDisplay = ActivityFactory.createTextView(this, 15, "Weight: ");
+    	weight = ActivityFactory.createEditText(this, 15, "");
     	weight.setInputType(InputType.TYPE_CLASS_NUMBER);
-    	TextView lbsDisplay = (TextView) createText(Views.TEXTVIEW, 15, "lbs.", "");
+    	TextView lbsDisplay = ActivityFactory.createTextView(this, 15, "lbs.");
     	View[] views = new View[] { weightDisplay, weight, lbsDisplay };
     	
     	LinearLayout weightLayout = (LinearLayout) createLinearLayout(LinearLayout.HORIZONTAL);
@@ -170,13 +211,13 @@ public class HomeActivity extends Activity {
     }
     
     private LinearLayout createHeightView() {
-    	TextView heightDisplay = (TextView) createText(Views.TEXTVIEW, 15, "Height: ", "");
-    	height_feet = (EditText) createText(Views.EDITTEXT, 15, User.getHeight_feet() + "", "");
+    	TextView heightDisplay = ActivityFactory.createTextView(this, 15, "Height:");
+    	height_feet = ActivityFactory.createEditText(this, 15, "");
     	height_feet.setInputType(InputType.TYPE_CLASS_NUMBER);
-    	TextView feetDisplay = (TextView) createText(Views.TEXTVIEW, 15, "ft.", "");
-    	height_inches = (EditText) createText(Views.EDITTEXT, 15, User.getHeight_inches() + "", "");
+    	TextView feetDisplay = ActivityFactory.createTextView(this, 15, "ft.");
+    	height_inches = ActivityFactory.createEditText(this, 15, "");
     	height_inches.setInputType(InputType.TYPE_CLASS_NUMBER);
-    	TextView inchesDisplay = (TextView) createText(Views.TEXTVIEW, 15, "in.", "");
+    	TextView inchesDisplay = ActivityFactory.createTextView(this, 15, "in.");
     	View[] views = new View[] { heightDisplay, height_feet, feetDisplay, height_inches, inchesDisplay };
     	
     	LinearLayout heightLayout = (LinearLayout) createLinearLayout(LinearLayout.HORIZONTAL);
@@ -185,8 +226,8 @@ public class HomeActivity extends Activity {
     }
     
     private LinearLayout createAgeView() {
-    	TextView ageDisplay = (TextView) createText(Views.TEXTVIEW, 15, "Age: ", "");
-    	age = (EditText) createText(Views.EDITTEXT, 15, User.getAge() + "", "");
+    	TextView ageDisplay = ActivityFactory.createTextView(this, 15, "Age: ");
+    	age = ActivityFactory.createEditText(this, 15, "");
     	age.setInputType(InputType.TYPE_CLASS_NUMBER);
     	View[] views = new View[] { ageDisplay, age };
     	
@@ -196,72 +237,14 @@ public class HomeActivity extends Activity {
     }
     
     private LinearLayout createCredentialsView() {
-    	ImageView logo = createImageView(R.drawable.logo, ScaleType.FIT_XY);
-        TextView userDisplay = (TextView) createText(Views.TEXTVIEW, 15, "Username: " + User.getUsername(), "");
-        TextView passwordDisplay = (TextView) createText(Views.TEXTVIEW, 15, "Password: " + User.getPassword(), "");
-        View[] views = new View[] { logo, userDisplay, passwordDisplay };
+        TextView userDisplay = ActivityFactory.createTextView(this, 15, "Username: " + User.getUsername());
+        TextView passwordDisplay = ActivityFactory.createTextView(this, 15, "Password: " + User.getPassword());
+        View[] views = new View[] {userDisplay, passwordDisplay };
         
         // Create a horizontal LinearLayout and add the Views to it
         LinearLayout credentialsLayout = (LinearLayout) createLinearLayout(LinearLayout.VERTICAL);
         addViewsToLayout(views, credentialsLayout);
         return credentialsLayout;
-    }
-    
-    // Adds the View elements in the array into the layout
-    private void addViewsToLayout(View[] views, ViewGroup layout) {
-    	if(views != null && layout != null) {
-    		for(View v : views) layout.addView(v);
-    	}
-    }
-
-    /*
-     * Creates a View and returns that created View. 
-     * If creating a TextView, pass in "" for hint.
-     * If creating an EditText, pass in "" for text.
-     * Returns null if no View was created.
-     */
-    private View createText(Views views, int textSize, String text, String hint) {
-    	View view = null;
-    	if(views == Views.TEXTVIEW) {
-    		view = new TextView(this);
-    		((TextView) view).setTextSize(textSize);
-    		((TextView) view).setText(text);
-    	}
-    	else if(views == Views.EDITTEXT) {
-    		view = new EditText(this);
-    		((EditText) view).setTextSize(textSize);
-    		((EditText) view).setHint(text);
-    	}
-    	return view;
-    }
-    
-    // Creates a View and returns that created View. 
-    private LinearLayout createLinearLayout(int orientation) {
-    	LinearLayout view = new LinearLayout(this);
-    	view.setOrientation(orientation);
-    	return view;
-    }
-    
-    // Creates a View and returns that created View. 
-    private ImageView createImageView(int imageResource, ImageView.ScaleType scaleType) {
-    	ImageView view = new ImageView(this);
-    	view.setImageResource(imageResource);
-    	view.setScaleType(scaleType);
-    	return view;
-    }
-    
-    // Shows an error with the message passed in the parameter 
-    public void showErrorMessage(String message) {
-    	AlertDialog ad = new AlertDialog.Builder(this).create();
-		ad.setCancelable(true);
-		ad.setMessage(message);
-		ad.show();
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_home, menu);
-        return true;
     }
 
 	public EditText getBMIIndex() {

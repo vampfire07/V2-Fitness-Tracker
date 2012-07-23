@@ -1,6 +1,8 @@
 package com.example.v2fitnesstracker;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class User {
 
@@ -13,6 +15,9 @@ public class User {
 	private static int goal_weight;
 	private static int height_feet;
 	private static int height_inches;
+	
+	private static List<Exercise> exercises;
+	private static List<Food> foods;
 	
 	public static void clearData() {
 		username = "";
@@ -87,5 +92,24 @@ public class User {
 
 	public static void setAge(int age) {
 		User.age = age;
+	}
+
+	public static List<Exercise> getExercises() {
+		if(exercises == null) {
+			exercises = new ArrayList<Exercise>();
+		}
+		return exercises;
+	}
+
+	public static void setExercises(List<Exercise> exercises) {
+		User.exercises = exercises;
+	}
+
+	public static List<Food> getFoods() {
+		return foods;
+	}
+
+	public static void setFoods(List<Food> foods) {
+		User.foods = foods;
 	}
 }
