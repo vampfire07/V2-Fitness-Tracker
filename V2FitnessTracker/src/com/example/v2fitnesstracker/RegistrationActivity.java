@@ -1,8 +1,9 @@
 package com.example.v2fitnesstracker;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -27,7 +28,10 @@ public class RegistrationActivity extends Activity {
     }
     
     public void back(View view) {
+    	// Get the Intent that started this Activity
     	Intent backToLogin = new Intent(this, LoginActivity.class);
+    	
+    	// Close this Activity and start the Activity defined by the Intent
     	finish();
     	startActivity(backToLogin);
     }
@@ -36,43 +40,61 @@ public class RegistrationActivity extends Activity {
     	// An Intent to start an activity called HomeActivity
     	Intent loginIntent = new Intent(this, HomeActivity.class);
     	
-    	// findViewById() to get the EditText username element and add its content to the intent
-    	EditText usernameText = (EditText) findViewById(R.id.user_username);
-    	String username = usernameText.getText().toString();
-    	loginIntent.putExtra(USERNAME_PACKAGE, username);
-    	
-    	// findViewById() to get the EditText password element and add its content to the intent
-    	EditText passwordText = (EditText) findViewById(R.id.user_password);
-    	String password = passwordText.getText().toString();
-    	loginIntent.putExtra(PASSWORD_PACKAGE, password);
-    	
-    	AlertDialog ad = new AlertDialog.Builder(this).create();
-    	boolean usernameEmpty = false;
-    	boolean passwordEmpty = false;
-    	if(username == null || username.isEmpty()) {
-    		ad.setCancelable(false);
-    		ad.setMessage("Username cannot be empty.");
-    		usernameEmpty = true;
-    	}
-    	if(password == null || password.isEmpty()) {
-    		if(usernameEmpty) ad.setMessage("Username and password cannot be empty.");
-    		else ad.setMessage("Password cannot be empty.");
-    		passwordEmpty = true;
-		}
-    	
-    	if(usernameEmpty || passwordEmpty) {
-    		ad.setButton("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface arg0, int arg1) {
-					arg0.dismiss();
-				}
-    		});
-    		ad.show();
+    	if(isEmpty(R.id.user_username) || isEmpty(R.id.user_password)) {
+    		showErrorMessage("Both username and password fields must not be empty.");
     		return;
     	}
+    	
+    	// Sets the User properties with the username, password and date registered provided
+    	User.setUsername(getTextFromEditText(R.id.user_username));
+    	User.setPassword(getTextFromEditText(R.id.user_password));
+    	Date registered = new Date();
+    	User.setRegistered(registered);
+    	
+    	// Adds the username, password and date registered to the Intent
+    	addToIntent(loginIntent, R.id.user_username, USERNAME_PACKAGE);
+    	addToIntent(loginIntent,R.id.user_password, PASSWORD_PACKAGE);
+    	loginIntent.putExtra("date_registered", registered);
     	
     	// Finishes this Activity and starts a new one
     	finish();
     	startActivity(loginIntent);
+    }
+    
+ // Shows an error with the message passed in the parameter 
+    public void showErrorMessage(String message) {
+    	AlertDialog ad = new AlertDialog.Builder(this).create();
+		ad.setCancelable(true);
+		ad.setMessage(message);
+		ad.show();
+    }
+    
+    // Returns the String content of the EditText provided its id
+    public String getTextFromEditText(int id) {
+    	try {
+    		EditText editText = (EditText) findViewById(id);
+    		return editText.getText().toString();
+    	}
+    	catch(ClassCastException e) {
+    		return "";
+    	}
+    }
+    
+    // Returns false if the content is empty or null
+    public void addToIntent(Intent intent, int id, final String pack) {
+    	EditText edittext = (EditText)findViewById(id);
+    	String content = edittext.getText().toString();
+    	intent.putExtra(pack, content);
+    }
+    
+    // Returns true if the View with the id passed in's text is empty or null
+    public boolean isEmpty(int id) {
+    	EditText edittext = (EditText)findViewById(id);
+    	String content = edittext.getText().toString();
+    	if(content == null || content.isEmpty()) {
+    		return true;
+    	}
+    	return false;
     }
     
 }
