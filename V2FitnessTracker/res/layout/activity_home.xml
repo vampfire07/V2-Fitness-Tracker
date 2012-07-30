@@ -251,7 +251,7 @@
         			android:layout_height="wrap_content"
         			android:enabled="false"
         			android:hint="@string/whitespace_fifteen"
-        			android:maxLength="3"
+        			android:maxLength="4"
         			android:textColor="#FF0000"/>
        	        
        	    </LinearLayout>
