@@ -16,16 +16,53 @@ public class NavigationFactory {
 		this.context = context;
 	}
 	
-	public LinearLayout createNavigationButtons() {
-		LinearLayout layout = new LinearLayout(context);
-		Button home = createHomeButton();
-		Button exercise = createExerciseButton();
-		Button nutrition = createNutritionButton();
-		Button journal = createJournalButton();
-		Button logout = createLogoutButton();
-    	View[] views = new View[] { home, exercise, nutrition, journal, logout };
-    	addViewsToLayout(views, layout);
-    	return layout;
+	public void setNavigationOnClick(Button home, Button exercise, Button nutrition, 
+			Button journal, Button logout) {
+		setOnClickHomeButton(home);
+		setOnClickExerciseButton(exercise);
+		setOnClickNutritionButton(nutrition);
+		setOnClickJournalButton(journal);
+		setOnClickLogoutButton(logout);
+	}
+	
+	private void setOnClickLogoutButton(Button logout) {
+		logout.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				navigate(Pages.LOGIN);
+			}
+		});
+	}
+	
+	private void setOnClickJournalButton(Button journal) {
+		journal.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				navigate(Pages.JOURNAL);
+			}
+		});
+	}
+
+	private void setOnClickNutritionButton(Button nutrition) {
+		nutrition.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				navigate(Pages.NUTRITION);
+			}
+		});
+	}
+
+	private void setOnClickExerciseButton(Button exercise) {
+		exercise.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				navigate(Pages.EXERCISE);
+			}
+		});
+	}
+
+	private void setOnClickHomeButton(Button home) {
+		home.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				navigate(Pages.HOME);
+			}
+		});
 	}
 	
 	private void navigate(Pages page) {
@@ -51,76 +88,6 @@ public class NavigationFactory {
 		activity.startActivity(navigateIntent);
 	}
 	
-	private Button createHomeButton() {
-		Button home = new Button(context);
-		home.setTextSize(10);
-    	home.setText("Home");
-    	home.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				navigate(Pages.HOME);
-			}
-    	});
-		return home;
-	}
-	
-	private Button createExerciseButton() {
-		Button exercise = new Button(context);
-		exercise.setTextSize(10);
-    	exercise.setText("Exercise");
-    	exercise.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				navigate(Pages.EXERCISE);
-			}
-    	});
-		return exercise;
-	}
-	
-	private Button createNutritionButton() {
-		Button nutrition = new Button(context);
-		nutrition.setTextSize(10);
-		nutrition.setText("Nutrition");
-		nutrition.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				navigate(Pages.NUTRITION);
-			}
-    	});
-		return nutrition;
-	}
-	
-	private Button createJournalButton() {
-		Button journal = new Button(context);
-		journal.setTextSize(10);
-		journal.setText("Journal");
-		journal.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				navigate(Pages.JOURNAL);
-			}
-    	});
-		return journal;
-	}
-	
-	private Button createLogoutButton() {
-		Button logout = new Button(context);
-		logout.setTextSize(10);
-		logout.setText("Logout");
-		logout.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				User.clearData();
-				navigate(Pages.LOGIN);
-			}
-    	});
-		return logout;
-	}
-	
-	// Adds the View elements in the array into the layout
-    private void addViewsToLayout(View[] views, View layout) {
-    	if(views != null && layout != null) {
-    		if(layout.getClass() == LinearLayout.class) {
-    			for(View v : views) ((LinearLayout) layout).addView(v);
-    		}
-    	}
-    }
-
 	public Context getContext() {
 		return context;
 	}

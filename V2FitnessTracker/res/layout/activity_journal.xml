@@ -1,15 +1,73 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <TextView
-        android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="#000000">
+    
+    <LinearLayout android:id="@+id/journal_overallLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:padding="@dimen/padding_medium"
-        android:text="@string/hello_world"
-        tools:context=".JournalActivity" />
-
-</RelativeLayout>
+        android:orientation="vertical">
+     
+        <include layout="@layout/logo"/>
+       	<include layout="@layout/navigation"/>
+       	
+       	<LinearLayout android:layout_width="wrap_content"
+       	    android:layout_height="wrap_content"
+       	    android:paddingTop="10dp"
+       	    android:paddingBottom="10dp"
+       	    android:layout_gravity="center_horizontal">
+       	    
+       	    <Button android:layout_width="90dp"
+       	    android:layout_height="30dp"
+       	    android:text="@string/journal_newEntry"
+       	    android:textColor="#FFFFFF"
+       	    android:textSize="12dp"
+       	    android:onClick="newEntry"/>
+       	    
+       	    <Button android:id="@+id/journal_lockButton" 
+       	    android:layout_width="70dp"
+       	    android:layout_height="30dp"
+       	    android:text="@string/journal_lock"
+       	    android:textColor="#FFFFFF"
+       	    android:textSize="12dp"
+       	    android:onClick="lockUnlock"/>
+       	    
+       	    <Button android:layout_width="70dp"
+       	    android:layout_height="30dp"
+       	    android:text="@string/journal_clear"
+       	    android:textColor="#FFFFFF"
+       	    android:textSize="12dp"
+       	    android:onClick="clear"/>
+       	    
+       	</LinearLayout>
+       	
+       	<LinearLayout android:id="@+id/journal_journalLayout"
+       	    android:layout_width="match_parent"
+       	    android:layout_height="wrap_content"
+       	    android:orientation="vertical">
+       	    
+    	    <TextView android:id="@+id/journal_initialDate"
+     	        android:layout_width="match_parent"
+     	        android:layout_height="wrap_content"
+     	        android:text=""/>
+      	    
+			<EditText
+			    android:id="@+id/journal"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:background="#FFFFFF"
+			    android:hint="@string/journal_hint"
+			    android:inputType="textNoSuggestions"
+			    android:paddingBottom="10dp"
+			    android:paddingLeft="10dp"
+			    android:paddingRight="10dp"
+			    android:paddingTop="10dp"
+			    android:singleLine="false"
+			    android:textSize="14dp" />
+			
+       	</LinearLayout>
+       	
+    </LinearLayout>
+    
+</ScrollView>

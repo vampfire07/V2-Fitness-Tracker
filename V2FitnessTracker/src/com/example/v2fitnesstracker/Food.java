@@ -2,11 +2,13 @@ package com.example.v2fitnesstracker;
 
 public class Food {
 	
+	private long id;
 	private String name;
 	private String amount;
 	private int calories;
 	
-	public Food(String name, String amount, int calories) {
+	public Food(long id, String name, String amount, int calories) {
+		this.id = id;
 		this.name = name;
 		this.amount = amount;
 		this.calories = calories;
@@ -29,5 +31,13 @@ public class Food {
 	}
 	public void setCalories(int calories) {
 		this.calories = calories;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 }

@@ -47,24 +47,27 @@
 	    	<!-- Username -->
 	        <TextView android:layout_width="match_parent"
 	        android:layout_height="match_parent"
-	        android:text="@string/registration_username"/>
+	        android:text="@string/registration_username"
+	        android:textSize="25dp"/>
 	    
 	    	<EditText android:id="@+id/user_username"
 	        android:inputType="textNoSuggestions"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
-	        android:hint="@string/username_hint"/>
-	    	
+	        android:hint="@string/username_hint"
+	        android:maxLength="15"/>
 	    	<!-- Password -->
 	    	<TextView android:layout_width="match_parent"
 	        android:layout_height="match_parent"
-	        android:text="@string/registration_password"/>
+	        android:text="@string/registration_password"
+	        android:textSize="25dp"/>
 	    
 	    	<EditText android:id="@+id/user_password"
 	        android:inputType="textPassword"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
-	        android:hint="@string/password_hint"/>
+	        android:hint="@string/password_hint"
+	        android:maxLength="15"/>
 	    	
 	    	<!-- Register Button -->
 	    	<Button android:id="@+id/register_button"

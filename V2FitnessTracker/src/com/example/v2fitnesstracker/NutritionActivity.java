@@ -1,42 +1,34 @@
 package com.example.v2fitnesstracker;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-// TO-DO: Add Food to User
-// TO-DO: Remove rows
 public class NutritionActivity extends Activity implements V2Activity {
-
-	private EditText foodName;
-	private EditText amount;
-	private EditText calories;
-	private TableLayout foodLayout;
-	private List<ViewGroup> rows;
+	
+	private final String FIELD_NAME = "NAME";
+	private final String FIELD_AMOUNT = "AMOUNT";
+	private final String FIELD_CALORIES = "CALORIES";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        rows = new ArrayList<ViewGroup>();
-        setPageView();
+        setContentView(R.layout.activity_nutrition);
+        setNavigationButtons();
+        updateView();
     }
 
     @Override
@@ -44,103 +36,160 @@ public class NutritionActivity extends Activity implements V2Activity {
         getMenuInflater().inflate(R.menu.activity_nutrition, menu);
         return true;
     }
-
-	public void setPageView() {
-		ScrollView overallLayout = new ScrollView(this);
-		LinearLayout linearOverallLayout = createLinearLayout(LinearLayout.VERTICAL);
-		View[] views = new View[] { createLogo(), new NavigationFactory(this).createNavigationButtons(), createContentLayout() };
-		addViewsToLayout(views, linearOverallLayout);
-		overallLayout.addView(linearOverallLayout);
-		setContentView(overallLayout);
-	}
-	
-	private TableLayout createContentLayout() {
-		foodLayout = new TableLayout(this);
-		View[] views = new View[] { createHeader(), createFoodRowView() };
-		addViewsToLayout(views, foodLayout);
-		return foodLayout;
-	}
-	
-	private TableRow createHeader() {
-		TableRow header = new TableRow(this);
-    	LinearLayout headerContainer = createLinearLayout(LinearLayout.HORIZONTAL);
-    	String[] headerNames = new String[] { "Name", "Amount", "Calories"};
-    	TextView[] views = new TextView[headerNames.length];
-    	for(int i = 0; i < headerNames.length; i++) {
-    		views[i] = ActivityFactory.createTextView(this, 15, headerNames[i]);
-    		views[i].setTextColor(Color.RED);
+    
+    public void addRow(View view) {
+    	Food newFood = new Food(User.foodId++, "", "", 0);
+    	User.addFood(newFood);
+    	updateView();
+    }
+    
+    public void removeRow(View view) {
+    	LinearLayout parent = (LinearLayout)view.getParent();
+    	long id = -1;
+    	for(int i = 0; i < parent.getChildCount(); i++) {
+    		View child = parent.getChildAt(i);
+    		if(child instanceof TextView) {
+    			id = Long.parseLong(((TextView) child).getText().toString());
+    			break;
+    		}
     	}
-    	addViewsToLayout(views, headerContainer);
-    	header.addView(headerContainer);
-    	return header;
-	}
-	
-	private TableRow createFoodRowView() {
+    	User.removeFood(User.findFoodById(id));
+    	parent.removeAllViews();
+    	parent.setVisibility(View.GONE);
+    }
+    
+    private void updateView() {
+    	TableLayout foodLayout = (TableLayout)findViewById(R.id.nutrition_foodLayout);
+    	foodLayout.removeAllViews();
+    	for(Food f : User.getFoods()) {
+    		foodLayout.addView(createFoodRow(f));
+    	}
+    }
+    
+    private TableRow createFoodRow(Food food) {
     	TableRow row = new TableRow(this);
-    	foodName = ActivityFactory.createEditText(this, 12, "Food");
-    	amount = ActivityFactory.createEditText(this, 12, "Amount");
-    	calories = ActivityFactory.createEditText(this, 12, "Calories");
-    	calories.setInputType(InputType.TYPE_CLASS_NUMBER);
-    	View[] views = new View[] { foodName, amount, calories, createAddFoodButtonView() };
+    	row.setBackgroundColor(Color.WHITE);
+    	
+    	final EditText foodName = createFoodNameView(food);
+    	final EditText foodAmount = createFoodAmountView(food);
+    	final EditText foodCalories = createFoodCaloriesView(food);
+    	setFieldListeners(foodName, foodAmount, foodCalories);
+    	
+    	View[] views = new View[] { createHiddenIdView(food), foodName, foodAmount,
+    			foodCalories, createRemoveButtonView() };
     	addViewsToLayout(views, row);
     	return row;
     }
-	
-	private Button createAddFoodButtonView() {
-		Button addFoodButton = new Button(this);
-		addFoodButton.setText("Add");
-    	addFoodButton.setTextSize(10);
-    	addFoodButton.setOnClickListener(new OnClickListener() {
+    
+    private EditText createFoodNameView(Food food) {
+    	EditText foodName = ActivityFactory.createEditText(this, 12, "Name");
+		foodName.setSingleLine(true);
+    	foodName.setText(food.getName());
+		return foodName;
+    }
+    
+    private EditText createFoodAmountView(Food food) {
+    	EditText foodAmount = ActivityFactory.createEditText(this, 12, "Amount");
+		foodAmount.setSingleLine(true);
+    	foodAmount.setText(food.getAmount());
+		return foodAmount;
+    }
+    
+    private EditText createFoodCaloriesView(Food food) {
+    	EditText foodCalories = ActivityFactory.createEditText(this, 12, "Calories");
+		foodCalories.setSingleLine(true);
+		foodCalories.setInputType(InputType.TYPE_CLASS_NUMBER);
+    	foodCalories.setText(food.getCalories() + "");
+		return foodCalories;
+    }
+    
+    private TextView createHiddenIdView(Food food) {
+    	TextView id = ActivityFactory.createTextView(this, 10, food.getId() + ""); 
+    	id.setVisibility(View.GONE);
+    	return id;
+    }
+    
+    private Button createRemoveButtonView() {
+		Button removeButton = new Button(this);
+		removeButton.setText("Remove");
+    	removeButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				removeRow(v);
+			}
+		});
+    	return removeButton;
+	}
+    
+    private void setFieldListeners(final EditText foodName, final EditText foodAmount, 
+    		final EditText foodCalories) {
+		setEditTextChangedListener(foodName, FIELD_NAME);
+    	setEditTextChangedListener(foodAmount, FIELD_AMOUNT);
+    	setEditTextChangedListener(foodCalories, FIELD_CALORIES);
+	}
+    
+    private void setEditTextChangedListener(final EditText text, final String field) {
+    	text.addTextChangedListener(new TextWatcher() {
+    		public void afterTextChanged(Editable s) {
 				try {
-					foodLayout.addView(createFoodRowView());
-//					addFoodToUser(new Food(foodName.getText().toString(), amount.getText().toString(), 
-//							Integer.parseInt(calories.getText().toString())));
+					if(field.equals(FIELD_NAME))
+						User.findFoodById(findId(text)).setName(text.getText().toString());
+					else if(field.equals(FIELD_AMOUNT))
+						User.findFoodById(findId(text)).setAmount(text.getText().toString());
+					else if(field.equals(FIELD_CALORIES))
+						User.findFoodById(findId(text)).setCalories(Integer.parseInt(text.getText().toString()));
+				}
+				catch(NullPointerException e) {
 				}
 				catch(NumberFormatException e) {
-					showErrorMessage("Please fill in the fields with the correct information.");
 				}
 			}
-    		
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
     	});
-		return addFoodButton;
-	}
-	
-	private void addFoodToUser(Food food) {
-    	List<Food> foods = User.getFoods();
-    	foods.add(food);
-    	User.setFoods(foods);
     }
-	
-	public void showErrorMessage(String message) {
+    
+    private long findId(View view) {
+		LinearLayout viewParent = (LinearLayout)view.getParent();
+		View idView = viewParent.getChildAt(0);
+		// The id field is a TextView located at index 0 of the layout.
+		if(idView instanceof TextView) {
+			return Long.parseLong(((TextView) idView).getText().toString());
+		}
+		return -1;
+	}
+    
+    public void setNavigationButtons() {
+    	Button home = (Button)findViewById(R.id.navigation_home);
+    	Button exercise = (Button)findViewById(R.id.navigation_exercise);
+    	Button nutrition = (Button)findViewById(R.id.navigation_nutrition);
+    	Button journal = (Button)findViewById(R.id.navigation_journal);
+    	Button logout = (Button)findViewById(R.id.navigation_logout);
+    	new NavigationFactory(this).setNavigationOnClick(home, exercise, nutrition, journal, logout);
+    }
+    
+	// Shows an AlertDialog with the message passed in the parameter
+	public void showAlertMessage(String message, boolean cancelable) {
 		AlertDialog ad = new AlertDialog.Builder(this).create();
-		ad.setCancelable(true);
+		ad.setCancelable(cancelable);
 		ad.setMessage(message);
 		ad.show();
 	}
 
+	// Adds the View elements inside the array into the layout
 	public void addViewsToLayout(View[] views, ViewGroup layout) {
 		if(views != null && layout != null) {
     		for(View v : views) layout.addView(v);
     	}
 	}
 
-	public ImageView createImageView(int imageResource, ScaleType scaleType) {
-		ImageView view = new ImageView(this);
-    	view.setImageResource(imageResource);
-    	view.setScaleType(scaleType);
-    	return view;
-	}
-
-	public ImageView createLogo() {
-		return createImageView(R.drawable.logo, ScaleType.FIT_XY);
-	}
-
+	// Returns a LinearLayout with the orientation passed in as parameter
 	public LinearLayout createLinearLayout(int orientation) {
 		LinearLayout view = new LinearLayout(this);
     	view.setOrientation(orientation);
     	return view;
 	}
-
-    
 }

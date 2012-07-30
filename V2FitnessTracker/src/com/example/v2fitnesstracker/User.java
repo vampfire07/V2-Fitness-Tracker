@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.List;
 
 public class User {
+	
+	public static long exerciseId = 1;
+	public static long foodId = 1;
 
 	private static String username;
 	private static String password;
@@ -16,8 +19,9 @@ public class User {
 	private static int height_feet;
 	private static int height_inches;
 	
-	private static List<Exercise> exercises;
-	private static List<Food> foods;
+	private static List<Exercise> exercises = new ArrayList<Exercise>();
+	private static List<Food> foods = new ArrayList<Food>();
+	private static Journal journal = new Journal();
 	
 	public static void clearData() {
 		username = "";
@@ -28,6 +32,44 @@ public class User {
 		goal_weight = 0;
 		height_feet = 0;
 		height_inches = 0;
+	}
+	
+	public static Food findFoodById(long id) {
+		for(Food f : foods) {
+			if(f.getId() == id) return f;
+		}
+		return null;
+	}
+	
+	public static void removeFood(Food food) {
+		List<Food> temp = foods;
+		temp.remove(findFoodById(food.getId()));
+		User.setFoods(temp);
+	}
+	
+	public static void addFood(Food food) {
+		List<Food> temp = foods;
+		temp.add(food);
+		User.setFoods(temp);
+	}
+	
+	public static Exercise findExerciseById(long id) {
+		for(Exercise e : exercises) {
+			if(e.getId() == id) return e;
+		}
+		return null;
+	}
+	
+	public static void removeExercise(Exercise exercise) {
+		List<Exercise> temp = exercises;
+		temp.remove(findExerciseById(exercise.getId()));
+		User.setExercises(temp);
+	}
+	
+	public static void addExercise(Exercise exercise) {
+		List<Exercise> temp = exercises;
+		temp.add(exercise);
+		User.setExercises(temp);
 	}
 	
 	public static String getUsername() {
@@ -111,5 +153,13 @@ public class User {
 
 	public static void setFoods(List<Food> foods) {
 		User.foods = foods;
+	}
+
+	public static Journal getJournal() {
+		return journal;
+	}
+
+	public static void setJournal(Journal journal) {
+		User.journal = journal;
 	}
 }

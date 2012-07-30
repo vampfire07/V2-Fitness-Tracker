@@ -2,16 +2,18 @@ package com.example.v2fitnesstracker;
 
 public class Exercise {
 	
+	private long id;
 	private String name;
 	private String type;
 	private int sets;
 	private int reps;
 	
-	public Exercise(String name, String type, int sets, int reps) {
-		this.setName(name);
-		this.setType(type);
-		this.setSets(sets);
-		this.setReps(reps);
+	public Exercise(long id, String name, String type, int sets, int reps) {
+		this.id = id;
+		this.name = name;
+		this.type = type;
+		this.sets = sets;
+		this.reps = reps;
 	}
 
 	public String getName() {
@@ -44,5 +46,13 @@ public class Exercise {
 
 	public void setReps(int reps) {
 		this.reps = reps;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 }

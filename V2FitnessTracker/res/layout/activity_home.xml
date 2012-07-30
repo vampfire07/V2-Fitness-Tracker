@@ -1,6 +1,295 @@
-<LinearLayout android:id="@+id/home"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-</LinearLayout>
+    android:background="#000000">
+    
+    <LinearLayout android:id="@+id/home_overallLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+     
+        <include layout="@layout/logo"/>
+       	<include layout="@layout/navigation"/>
+       	
+       	<LinearLayout android:id="@+id/home_userCredentials"
+       	    android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="3dp"
+       		android:paddingBottom="3dp"
+        	android:orientation="vertical">
+        	
+       	    <!-- Username -->
+       	    <LinearLayout android:layout_width="match_parent"
+       	        android:layout_height="wrap_content">
+       	        
+				<TextView android:layout_width="wrap_content"
+        			android:layout_height="wrap_content"
+        			android:text="@string/home_usernameText"
+        			android:textColor="#FFFFFF"/>
+				
+       	    	<EditText android:id="@+id/home_username"
+       	    	    android:background="@drawable/edittextwithborder"
+       	    	    android:layout_width="80dp"
+        			android:layout_height="wrap_content"
+        			android:enabled="false"
+        			android:hint="@string/whitespace_fifteen"
+        			android:maxLength="20"
+        			android:inputType="textNoSuggestions"
+        			android:textColor="#FF0000"/>
+       	    	
+       	    	<Button android:layout_width="wrap_content"
+       	    	    android:layout_height="30dp"
+       	    	    android:paddingBottom="3dp"
+       	    	    android:paddingTop="3dp"
+       	    	    android:text="@string/home_changeText"
+       	    	    android:textColor="#FFFFFF"
+       	    	    android:textSize="10dp"
+       	    	    android:onClick="changeUsername"/>
+       	    	       	        
+       	    </LinearLayout>
+       	    
+       	    <!-- Password -->
+       	    <LinearLayout android:layout_width="match_parent"
+       	        android:layout_height="wrap_content">
+       	        
+				<TextView android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@string/home_passwordText"
+        		android:textColor="#FFFFFF"/>
+				
+       	    	<EditText android:id="@+id/home_password"
+       	    	    android:background="@drawable/edittextwithborder"
+       	    	    android:layout_width="80dp"
+        			android:layout_height="wrap_content"
+        			android:enabled="false"
+        			android:hint="@string/whitespace_fifteen"
+        			android:maxLength="20"
+        			android:inputType="textNoSuggestions"
+        			android:textColor="#FF0000"/>
+       	    	       	        
+       	    	<Button android:layout_width="wrap_content"
+       	    	    android:layout_height="30dp"
+       	    	    android:paddingTop="3dp"
+       	    	    android:paddingBottom="3dp"
+       	    	    android:text="@string/home_changeText"
+       	    	    android:textColor="#FFFFFF"
+       	    	    android:textSize="10dp"
+       	    	    android:onClick="changePassword"/>
+       	    	
+       	    </LinearLayout>
+        	
+       	</LinearLayout>
+       	
+		<LinearLayout android:id="@+id/home_information"
+       	    android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="3dp"
+       		android:paddingBottom="3dp"
+        	android:orientation="vertical">
+       	    
+		    <!-- Age -->
+		    <LinearLayout android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="3dp"
+       		android:paddingBottom="3dp">
+       	        
+       	        <TextView android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@string/home_ageText"
+        		android:textSize="15dp"
+        		android:textColor="#FFFFFF"/>
+       	    
+       	 	   <EditText android:id="@+id/home_age"
+       	    	    android:background="@drawable/edittextwithborder"
+       	    	    android:layout_width="40dp"
+        			android:layout_height="wrap_content"
+        			android:hint="@string/whitespace_seven"
+        			android:maxLength="3"
+        			android:inputType="number"/>
+       	 	   
+       	    </LinearLayout>
+       	    
+		    <!-- Height -->
+		    <LinearLayout android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="3dp"
+       		android:paddingBottom="3dp">
+       	        
+       	        <TextView android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:paddingRight="3dp"
+        		android:text="@string/home_heightText"
+        		android:textSize="15dp"
+        		android:textColor="#FFFFFF"/>
+       	    
+       	 	   <EditText android:id="@+id/home_heightFeet"
+       	    	android:background="@drawable/edittextwithborder"
+       	    	android:layout_width="40dp"
+        		android:layout_height="wrap_content"
+        		android:paddingLeft="3dp"
+        		android:paddingRight="3dp"
+        		android:hint="@string/whitespace_seven"
+        		android:maxLength="1"
+        		android:inputType="number"/>
+       	 	   
+       	 	   <TextView android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:paddingLeft="3dp"
+        		android:paddingRight="3dp"
+        		android:text="@string/home_feetText"
+        		android:textSize="15dp"
+        		android:textColor="#FFFFFF"/>
+       	        
+       	 	   <EditText android:id="@+id/home_heightInches"
+      	    	android:background="@drawable/edittextwithborder"
+       	    	android:layout_width="40dp"
+        		android:layout_height="wrap_content"
+        		android:paddingRight="3dp"
+        		android:hint="@string/whitespace_seven"
+        		android:maxLength="2"
+        		android:inputType="number"/>
+       	        
+       	 	   <TextView android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:paddingLeft="3dp"
+        		android:paddingRight="3dp"
+        		android:text="@string/home_inchesText"
+        		android:textSize="15dp"
+        		android:textColor="#FFFFFF"/>
+       	 	   
+       	    </LinearLayout>
+		    
+      	</LinearLayout>
+      	
+		<!-- Weight -->
+	    <LinearLayout android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="3dp"
+       		android:paddingBottom="3dp">
+       	        
+      	    <TextView android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@string/home_weightText"
+        		android:textSize="15dp"
+        		android:textColor="#FFFFFF"/>
+       	    
+       	 	<EditText android:id="@+id/home_weight"
+       	    	android:background="@drawable/edittextwithborder"
+       	    	android:layout_width="40dp"
+        		android:layout_height="wrap_content"
+        		android:hint="@string/whitespace_seven"
+        		android:maxLength="3"
+        		android:inputType="number"/>
+       	 	   
+       	</LinearLayout>	
+       	
+	    <!-- Goal Weight -->
+	    <LinearLayout android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="3dp"
+       		android:paddingBottom="3dp">
+       	        
+      	    <TextView android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@string/home_goalWeightText"
+        		android:textSize="15dp"
+        		android:textColor="#FFFFFF"/>
+       	    
+       	 	<EditText android:id="@+id/home_goalWeight"
+       	    	android:background="@drawable/edittextwithborder"
+       	    	android:layout_width="40dp"
+        		android:layout_height="wrap_content"
+        		android:hint="@string/whitespace_seven"
+        		android:maxLength="3"
+        		android:inputType="number"/>
+       	 	   
+       	</LinearLayout>	
+       	
+	    <!-- Update Button -->
+	    <Button android:layout_width="wrap_content"
+       	    android:layout_height="30dp"
+       	    android:paddingTop="3dp"
+       	    android:paddingBottom="3dp"
+       	    android:text="@string/home_update"
+       	    android:textColor="#FFFFFF"
+       	    android:textSize="10dp"
+       	    android:onClick="update"/>
+       	
+		<!-- BMI -->
+       	<LinearLayout android:id="@+id/home_BMI"
+       	    android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="3dp"
+       		android:paddingBottom="3dp"
+        	android:orientation="vertical">
+        	
+       	    <!-- BMI Title -->
+       	    <TextView android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:paddingTop="3dp"
+        		android:paddingBottom="3dp"
+        		android:text="@string/home_BMIText"
+        		android:textSize="20dp"
+        		android:textColor="#FF0000"/>
+       	    
+       	    <!-- BMI Index -->
+       	    <LinearLayout android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="3dp"
+       		android:paddingBottom="3dp">
+       	        
+       	        <TextView android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@string/home_indexText"
+        		android:textSize="15dp"
+        		android:textColor="#FFFFFF"/>
+       	    
+       	 	   <EditText android:id="@+id/home_BMIindex"
+       	    	    android:background="@drawable/edittextwithborder"
+       	    	    android:layout_width="50dp"
+        			android:layout_height="wrap_content"
+        			android:enabled="false"
+        			android:hint="@string/whitespace_fifteen"
+        			android:maxLength="3"
+        			android:textColor="#FF0000"/>
+       	        
+       	    </LinearLayout>
+       	    
+       	    <!-- BMI Classification -->
+       	    <LinearLayout android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="3dp"
+       		android:paddingBottom="3dp">
+       	        
+       	        <TextView android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@string/home_classificationText"
+        		android:textSize="15dp"
+        		android:textColor="#FFFFFF"/>
+       	    
+       	 	   <EditText android:id="@+id/home_BMIclassification"
+       	    	    android:background="@drawable/edittextwithborder"
+       	    	    android:layout_width="120dp"
+        			android:layout_height="wrap_content"
+        			android:enabled="false"
+        			android:hint="@string/whitespace_twentyfive"
+        			android:textColor="#FF0000"/>
+       	        
+       	    </LinearLayout>
+       	    
+       	    <!-- Calculate BMI Button -->
+       	    <Button android:layout_width="wrap_content"
+       	    	    android:layout_height="30dp"
+       	    	    android:paddingTop="3dp"
+       	    	    android:paddingBottom="3dp"
+       	    	    android:text="@string/home_calculateBMI"
+       	    	    android:textColor="#FFFFFF"
+       	    	    android:textSize="10dp"
+       	    	    android:onClick="calculateBMI"/>
+       	    
+       	</LinearLayout>
+        	    
+    </LinearLayout>
+    
+</ScrollView>
