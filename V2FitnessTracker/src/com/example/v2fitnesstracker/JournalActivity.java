@@ -17,6 +17,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 //TO-DO: Journal entries must have a textChanged listener
@@ -30,6 +32,15 @@ public class JournalActivity extends Activity implements V2Activity {
         setContentView(R.layout.activity_journal);
         setNavigationButtons();
         addFirstEntry();
+        updateView();
+    }
+    
+    public void updateView() {
+    	LinearLayout overallLayout = (LinearLayout)(findViewById(R.id.journal_overallLayout));
+    	overallLayout.removeViews(4, overallLayout.getChildCount() - 4);
+    	for(Entry e : User.getJournal().getEntries()) {
+    		overallLayout.addView(createEntryRow(e));
+    	}
     }
     
     private void addFirstEntry() {
@@ -60,14 +71,22 @@ public class JournalActivity extends Activity implements V2Activity {
     
     public void newEntry(View view) {
     	LinearLayout overallLayout = ((LinearLayout)findViewById(R.id.journal_overallLayout));
-    	LinearLayout entryLayout = createLinearLayout(LinearLayout.VERTICAL);
     	Date dateCreated = new Date();
     	Entry newEntry = new Entry(User.getJournal().entryId++, "", dateCreated);
+    	LinearLayout entryLayout = createLinearLayout(LinearLayout.VERTICAL);
     	View[] views = new View[] { createHiddenIdView(newEntry), createDateTextView(dateCreated), 
     			createNewEntryView(dateCreated), createRemoveButtonView() };
     	addViewsToLayout(views, entryLayout);
     	overallLayout.addView(entryLayout);
     	User.getJournal().addEntry(newEntry);
+    }
+    
+    private LinearLayout createEntryRow(Entry entry) {
+    	LinearLayout entryLayout = createLinearLayout(LinearLayout.VERTICAL);
+    	View[] views = new View[] { createHiddenIdView(entry), createNewEntryView(entry.getDate()),
+    			createDateTextView(entry.getDate()), createRemoveButtonView() };
+    	addViewsToLayout(views, entryLayout);
+    	return entryLayout;
     }
     
     public void removeEntry(View view) {

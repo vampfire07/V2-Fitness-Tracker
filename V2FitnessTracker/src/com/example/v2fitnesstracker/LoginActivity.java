@@ -1,6 +1,7 @@
 package com.example.v2fitnesstracker;
 
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -63,10 +64,10 @@ public class LoginActivity extends Activity{
     }
     
     // Returns true if the View with the id passed in's text is empty or null
-    public boolean isEmpty(int id) {
+	public boolean isEmpty(int id) {
     	EditText edittext = (EditText)findViewById(id);
     	String content = edittext.getText().toString();
-    	if(content == null || content.isEmpty()) {
+    	if(content == null || content.length() == 0) {
     		return true;
     	}
     	return false;

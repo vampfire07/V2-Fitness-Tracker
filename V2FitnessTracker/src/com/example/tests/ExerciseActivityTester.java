@@ -35,7 +35,7 @@ public class ExerciseActivityTester extends ActivityInstrumentationTestCase2<Exe
 	
 	@SmallTest
 	public void testAddExercise() {
-		User.setExercises(new ArrayList<Exercise>());
+//		User.setExercises(new ArrayList<Exercise>());
 		final Spinner spinner = activity.createSpinner(R.array.exercise_types);
 		// 2nd selection is Biceps
 		spinner.setSelection(1);
@@ -61,8 +61,8 @@ public class ExerciseActivityTester extends ActivityInstrumentationTestCase2<Exe
 	
 	@SmallTest
 	public void testRemoveExercise() {
-		User.setExercises(new ArrayList<Exercise>());
 		Exercise exercise = new Exercise(1, "Bicep Curl", "Biceps", 3, 20);
+		User.setExercises(new ArrayList<Exercise>());
 		User.addExercise(exercise);
 		
 		// Asserts that the exercise was added
