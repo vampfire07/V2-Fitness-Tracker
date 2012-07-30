@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- Buttons do not have an onClick value set. It will be set in Java code. -->
+   	<Button android:id="@+id/navigation_home"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="50dp"
+   	    android:layout_weight="1"
+   	    android:text="@string/navigation_home"
+   	    android:textColor="#FFFFFF"
+   	    android:textSize="9dp"/>
+   	<Button android:id="@+id/navigation_exercise"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="50dp"
+   	    android:layout_weight="1"
+   	    android:text="@string/navigation_exercise"
+   	    android:textColor="#FFFFFF"
+   	    android:textSize="9dp"/>
+   	<Button android:id="@+id/navigation_nutrition"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="50dp"
+   	    android:layout_weight="1"
+   	    android:text="@string/navigation_nutrition"
+   	    android:textColor="#FFFFFF"
+   	    android:textSize="9dp"/>
+   	<Button android:id="@+id/navigation_journal"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="50dp"
+   	    android:layout_weight="1"
+   	    android:text="@string/navigation_journal"
+   	    android:textColor="#FFFFFF"
+   	    android:textSize="9dp"/>
+   	<Button android:id="@+id/navigation_logout"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="50dp"
+   	    android:layout_weight="1"
+   	    android:text="@string/navigation_logout"
+   	    android:textColor="#FFFFFF"
+   	    android:textSize="9dp"/>
+</LinearLayout>
