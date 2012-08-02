@@ -47,7 +47,7 @@ public class JournalActivityTester extends ActivityInstrumentationTestCase2<Jour
 		// Asserts that the journal is empty
 		assertTrue(User.getJournal().getEntries().size() == 0);
 		
-		// Asserts that the button contains a listener
+		// Asserts that the button contains a listener, calls button click
 		assertTrue(button.callOnClick());
 		
 		// Asserts that the click triggered for a new Entry to be created
@@ -60,23 +60,33 @@ public class JournalActivityTester extends ActivityInstrumentationTestCase2<Jour
 	@SmallTest
 	public void testRemoveEntry() {
 		User.getJournal().setEntries(new ArrayList<Entry>());
+		
+		// Asserts that the initial size of the User entries is 0
+		assertTrue(User.getJournal().getEntries().size() == 0);
+		
 		Entry entry = new Entry(1, "Blah", new Date());
 		User.getJournal().addEntry(entry);
 		
 		// Asserts that the entry was added
 		assertTrue(User.getJournal().getEntries().size() == 1);
 		
+		// A row layout is being created
 		LinearLayout layout = new LinearLayout(activity);
 		TextView id = new TextView(activity);
 		id.setText("1");
+		TextView isLocked = new TextView(activity);
+		isLocked.setText("false");
+		LinearLayout buttonLayout = new LinearLayout(activity);
 		Button button = new Button(activity);
 		button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				activity.removeEntry(v);
 			}
 		});
+		buttonLayout.addView(button);
 		layout.addView(id);
-		layout.addView(button);
+		layout.addView(isLocked);
+		layout.addView(buttonLayout);
 		
 		// Asserts that the button contains a listener
 		assertTrue(button.callOnClick());
@@ -89,53 +99,23 @@ public class JournalActivityTester extends ActivityInstrumentationTestCase2<Jour
 	public void testLockUnlock() {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				EditText journal = (EditText)activity.findViewById(R.id.journal);
+				Date dateCreated = new Date();
+				LinearLayout row = activity.createEntryRow(new Entry(1, "Hi", dateCreated));
+				EditText journal = (EditText)row.getChildAt(3);
+				LinearLayout buttonLayout = (LinearLayout)row.getChildAt(4);
+				Button lockUnlockButton = (Button)buttonLayout.getChildAt(0);
 				
-				Button button = new Button(activity);
-				button.setOnClickListener(new OnClickListener() {
-					public void onClick(View v) {
-						activity.lockUnlock(v);
-					}
-				});
+				// Asserts that there is a listener attached to the button
+				assertTrue(lockUnlockButton.callOnClick());
 				
-				// Asserts that the button contains a listener
-				assertTrue(button.callOnClick());
-				
-				// Asserts that the journal has been locked
+				// Asserts that the journal entry has been locked
 				assertFalse(journal.isEnabled());
 				
-				// Calls the listener onClick method again
-				assertTrue(button.callOnClick());
+				// Calls the method in the listener again
+				assertTrue(lockUnlockButton.callOnClick());
 				
-				// Asserts that the journal has been unlocked
+				// Asserts that the journal entry has been unlocked
 				assertTrue(journal.isEnabled());
-			}
-		});
-		getInstrumentation().waitForIdleSync();
-	}
-	
-	@SmallTest
-	public void testClear() {
-		activity.runOnUiThread(new Runnable() {
-			public void run() {
-				EditText journal = (EditText)activity.findViewById(R.id.journal);
-				journal.setText("HELLO");
-				
-				Button button = new Button(activity);
-				button.setOnClickListener(new OnClickListener() {
-					public void onClick(View v) {
-						activity.clear(v);
-					}
-				});
-				
-				// Asserts that the button contains a listener
-				assertTrue(button.callOnClick());
-				
-				// Asserts that the journal has been locked
-				assertEquals(journal.getText().toString(), "");
-				// TO-DO: Journal entries must have a textChanged listener
-//				assertTrue(User.getJournal().getEntries().get(0).getContent().equals(""));
-				
 			}
 		});
 		getInstrumentation().waitForIdleSync();

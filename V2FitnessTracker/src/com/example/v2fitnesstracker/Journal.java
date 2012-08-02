@@ -24,6 +24,7 @@ public class Journal {
 		entries.add(entry);
 	}
 	
+	// TO-DO: Change this to use temp
 	public void removeEntry(Entry entry) {
 		for(Entry e : entries) {
 			if(e.getId() == entry.getId()) entries.remove(e);

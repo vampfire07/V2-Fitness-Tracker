@@ -23,6 +23,7 @@ public class User {
 	private static int height_feet;
 	private static int height_inches;
 	
+	// Change to Dictionary (Map)
 	private static List<Exercise> exercises = new ArrayList<Exercise>();
 	private static List<Food> foods = new ArrayList<Food>();
 	private static Journal journal = new Journal();

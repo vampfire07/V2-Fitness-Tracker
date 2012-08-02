@@ -59,7 +59,7 @@ public class HomeActivity extends Activity implements V2Activity {
 			@SuppressWarnings("null")
 			public void onClick(DialogInterface dialog, int which) {
 				String newUsername = input.getText().toString();
-				if(newUsername != null || !newUsername.isEmpty()) {
+				if(newUsername != null || newUsername.length() != 0) {
 					if(newUsername.length() <= 15) {
 						User.setUsername(newUsername);
 						((EditText)findViewById(R.id.home_username)).setText(newUsername);
@@ -87,7 +87,7 @@ public class HomeActivity extends Activity implements V2Activity {
 			@SuppressWarnings("null")
 			public void onClick(DialogInterface dialog, int which) {
 				String newPassword = input.getText().toString();
-				if(newPassword != null || !newPassword.isEmpty()) {
+				if(newPassword != null || newPassword.length() != 0) {
 					if(newPassword.length() <= 15) {
 						User.setUsername(newPassword);
 						((EditText)findViewById(R.id.home_password)).setText(newPassword);

@@ -25,21 +25,6 @@
        	    android:textSize="12dp"
        	    android:onClick="newEntry"/>
        	    
-       	    <Button android:id="@+id/journal_lockButton" 
-       	    android:layout_width="70dp"
-       	    android:layout_height="30dp"
-       	    android:text="@string/journal_lock"
-       	    android:textColor="#FFFFFF"
-       	    android:textSize="12dp"
-       	    android:onClick="lockUnlock"/>
-       	    
-       	    <Button android:layout_width="70dp"
-       	    android:layout_height="30dp"
-       	    android:text="@string/journal_clear"
-       	    android:textColor="#FFFFFF"
-       	    android:textSize="12dp"
-       	    android:onClick="clear"/>
-       	    
        	</LinearLayout>
        	
        	<LinearLayout android:id="@+id/journal_journalLayout"
