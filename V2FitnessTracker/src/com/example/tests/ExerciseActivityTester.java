@@ -1,6 +1,6 @@
 package com.example.tests;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -8,10 +8,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.v2fitnesstracker.*;
+import com.example.entities.Exercise;
+import com.example.entities.User;
+import com.example.v2fitnesstracker.ExerciseActivity;
 
 public class ExerciseActivityTester extends ActivityInstrumentationTestCase2<ExerciseActivity> {
 	
@@ -35,38 +36,38 @@ public class ExerciseActivityTester extends ActivityInstrumentationTestCase2<Exe
 	
 	@SmallTest
 	public void testAddExercise() {
-//		User.setExercises(new ArrayList<Exercise>());
-		final Spinner spinner = activity.createSpinner(R.array.exercise_types);
-		// 2nd selection is Biceps
-		spinner.setSelection(1);
+		final User user = new User();
 		Button button = new Button(activity);
 		button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				User.addExercise(new Exercise(1, "Bicep Curl", spinner.getSelectedItem().toString(), 3, 20));
+				Exercise exercise = new Exercise();
+				exercise.setId(1);
+				exercise.setName("Bicep Curl");
+				exercise.setType("Biceps");
 			}
 		});
 		// Asserts that the user Exercises is empty
-		assertTrue(User.getExercises().size() == 0);
+		assertTrue(user.getExercises().size() == 0);
 		
 		// Asserts that the button contains a listener
 		assertTrue(button.callOnClick());
 		
 		// Asserts that the click triggered for a new Exercise to be created
-		assertTrue(User.getExercises().size() == 1);
-		assertTrue(User.getExercises().get(0).getName().equals("Bicep Curl"));
-		assertTrue(User.getExercises().get(0).getType().equals("Biceps"));
-		assertTrue(User.getExercises().get(0).getSets() == 3);
-		assertTrue(User.getExercises().get(0).getReps() == 20);
+		assertTrue(user.getExercises().size() == 1);
 	}
 	
 	@SmallTest
 	public void testRemoveExercise() {
-		Exercise exercise = new Exercise(1, "Bicep Curl", "Biceps", 3, 20);
-		User.setExercises(new ArrayList<Exercise>());
-		User.addExercise(exercise);
+		final User user = new User();
+		Exercise exercise = new Exercise();
+		exercise.setId(1);
+		exercise.setName("Bicep Curl");
+		exercise.setType("Biceps");
+//		user.setExercises(new HashSet<Exercise>());
+//		user.addExercise(exercise);
 		
 		// Asserts that the exercise was added
-		assertTrue(User.getExercises().size() == 1);
+		assertTrue(user.getExercises().size() == 1);
 		
 		LinearLayout layout = new LinearLayout(activity);
 		TextView id = new TextView(activity);
@@ -84,7 +85,7 @@ public class ExerciseActivityTester extends ActivityInstrumentationTestCase2<Exe
 		assertTrue(button.callOnClick());
 		
 		// Asserts that the exercise was removed
-		assertTrue(User.getExercises().size() == 0);
+		assertTrue(user.getExercises().size() == 0);
 	}
 }
 

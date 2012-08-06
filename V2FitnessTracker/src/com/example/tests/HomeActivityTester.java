@@ -4,6 +4,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.widget.EditText;
 
+import com.example.entities.User;
 import com.example.v2fitnesstracker.*;
 
 public class HomeActivityTester extends ActivityInstrumentationTestCase2<HomeActivity> {
@@ -37,35 +38,37 @@ public class HomeActivityTester extends ActivityInstrumentationTestCase2<HomeAct
 	
 	@SmallTest
 	public void testUpdate() {
-		User.setUsername("Bob");
-		User.setPassword("password123");
-		User.setAge(22);
-		User.setHeight_feet(6);
-		User.setHeight_inches(4);
-		User.setWeight(190);
-		User.setGoal_weight(210);
+		final User user = new User();
+		user.setUsername("Bob");
+		user.setPassword("password123");
+		user.setAge(22);
+		user.setHeightFeet(6);
+		user.setHeightInches(4);
+		user.setWeight(190);
+		user.setGoalWeight(210);
 		
 		// Check to see if the setters work
-		assertEquals(User.getUsername(), "Bob");
-		assertEquals(User.getPassword(), "password123");
-		assertEquals(User.getAge(), 22);
-		assertEquals(User.getHeight_feet(), 6);
-		assertEquals(User.getHeight_inches(), 4);
-		assertEquals(User.getWeight(), 190);
-		assertEquals(User.getGoal_weight(), 210);
+		assertEquals(user.getUsername(), "Bob");
+		assertEquals(user.getPassword(), "password123");
+		assertEquals(user.getAge(), 22);
+		assertEquals(user.getHeightFeet(), 6);
+		assertEquals(user.getHeightInches(), 4);
+		assertEquals(user.getWeight(), 190);
+		assertEquals(user.getGoalWeight(), 210);
 	}
 	
 	@SmallTest
 	public void testInitializeInformation() {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				User.setUsername("Bob");
-				User.setPassword("password123");
-				User.setAge(22);
-				User.setHeight_feet(6);
-				User.setHeight_inches(4);
-				User.setWeight(190);
-				User.setGoal_weight(210);
+				final User user = new User();
+				user.setUsername("Bob");
+				user.setPassword("password123");
+				user.setAge(22);
+				user.setHeightFeet(6);
+				user.setHeightInches(4);
+				user.setWeight(190);
+				user.setGoalWeight(210);
 				
 				activity.initializeInformation();
 				
@@ -84,9 +87,10 @@ public class HomeActivityTester extends ActivityInstrumentationTestCase2<HomeAct
 	
 	@SmallTest
 	public void testCalculateBMI() {
-		User.setWeight(135);
-		User.setHeight_feet(5);
-		User.setHeight_inches(6);
+		final User user = new User();
+		user.setWeight(135);
+		user.setHeightFeet(5);
+		user.setHeightInches(6);
 		double index = activity.calculateBMIIndex();
 		String classification = activity.calculateBMIClassification(index);
 		// Index should be 21.8
@@ -94,7 +98,7 @@ public class HomeActivityTester extends ActivityInstrumentationTestCase2<HomeAct
 		// Classification should be Normal
 		assertEquals(classification, "Normal");
 		
-		User.setHeight_feet(6);
+		user.setHeightFeet(6);
 		index = activity.calculateBMIIndex();
 		classification = activity.calculateBMIClassification(index);
 		// Index should be 15.6
@@ -102,8 +106,8 @@ public class HomeActivityTester extends ActivityInstrumentationTestCase2<HomeAct
 		// Classification should be Underweight
 		assertEquals(classification, "Underweight");
 		
-		User.setHeight_feet(5);
-		User.setHeight_inches(0);
+		user.setHeightFeet(5);
+		user.setHeightInches(0);
 		index = activity.calculateBMIIndex();
 		classification = activity.calculateBMIClassification(index);
 		// Index should be 26.4
@@ -111,7 +115,7 @@ public class HomeActivityTester extends ActivityInstrumentationTestCase2<HomeAct
 		// Classification should be Overweight
 		assertEquals(classification, "Overweight");
 		
-		User.setHeight_feet(4);
+		user.setHeightFeet(4);
 		index = activity.calculateBMIIndex();
 		classification = activity.calculateBMIClassification(index);
 		// Index should be 41.2

@@ -1,4 +1,4 @@
-package com.example.v2fitnesstracker;
+package com.example.enums;
 
 public enum Views {
 	TEXTVIEW, EDITTEXT

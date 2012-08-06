@@ -1,9 +1,8 @@
 package com.example.v2fitnesstracker;
 
+import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,8 +18,20 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class JournalActivity extends Activity implements V2Activity {
+import com.example.databases.DatabaseHelper;
+import com.example.entities.Entry;
+import com.example.entities.Journal;
+import com.example.entities.User;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
 
+public class JournalActivity extends OrmLiteBaseActivity<DatabaseHelper> implements V2Activity {
+
+	private User user;
+	private Journal journal;
+	private RuntimeExceptionDao<Journal, Integer> journalDao;
+	private RuntimeExceptionDao<Entry, Integer> entryDao;
+	
 	public final int ID_POSITION = 0;
 	public final int ISLOCKED_POSITION = 1;
 	public final int ENTRY_POSITION = 3; 
@@ -28,11 +39,21 @@ public class JournalActivity extends Activity implements V2Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = HomeActivity.user;
+        journalDao = getHelper().getRuntimeJournalDao();
+        setJournal();
+        entryDao = getHelper().getRuntimeEntryDao();
         setContentView(R.layout.activity_journal);
         setNavigationButtons();
         updateView();
     }
-    
+
+	private void setJournal() {
+		for(Journal j : journalDao.queryForAll()) {
+			if(j.getUser() == user) journal = j;
+		}
+	}
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_journal, menu);
@@ -43,38 +64,43 @@ public class JournalActivity extends Activity implements V2Activity {
     public void updateView() {
     	LinearLayout overallLayout = (LinearLayout)(findViewById(R.id.journal_overallLayout));
     	overallLayout.removeViews(3, overallLayout.getChildCount() - 3);
-    	for(Entry e : User.getJournal().getEntries()) {
-    		overallLayout.addView(createEntryRow(e));
+    	for(Entry e : entryDao.queryForAll()) {
+    		if(e.getJournal() == journal)
+    			overallLayout.addView(createEntryRow(e));
     	}
     }
     
     /* Returns the id of the View (LinearLayout) passed in the parameter.
      * view is the View component (a LinearLayout) containing the id field. 
      */
-    private long findId(View view) {
+    private int findId(View view) {
 		LinearLayout viewParent = (LinearLayout)view.getParent();
 		View idView = viewParent.getChildAt(0);
 		// The id field is a TextView located at index 0 of the layout.
 		if(idView instanceof TextView) {
-			return Long.parseLong(((TextView) idView).getText().toString());
+			return Integer.parseInt(((TextView) idView).getText().toString());
 		}
 		return -1;
 	}
 
     /*
-     *  Creates a new Journal entry and adds it to the User.
+     *  Creates a new Journal entry and adds it to the user.
      *  view is the View component that was clicked.
      */
     public void newEntry(View view) {
     	LinearLayout overallLayout = ((LinearLayout)findViewById(R.id.journal_overallLayout));
     	Date dateCreated = new Date();
-    	Entry newEntry = new Entry(User.getJournal().entryId++, "", dateCreated);
+    	Entry newEntry = new Entry();
+    	newEntry.setDate(dateCreated);
+    	newEntry.setJournal(journal);
+    	journalDao.update(journal);
+    	entryDao.create(newEntry);
+    	
     	LinearLayout entryLayout = createLinearLayout(LinearLayout.VERTICAL);
     	View[] views = new View[] { createHiddenIdView(newEntry), createIsJournalLockedView(newEntry), 
-    			createDateTextView(dateCreated), createNewEntryView(dateCreated), createButtonView() };
+    			createDateTextView(dateCreated), createNewEntryView(dateCreated, ""), createButtonView() };
     	addViewsToLayout(views, entryLayout);
     	overallLayout.addView(entryLayout);
-    	User.getJournal().addEntry(newEntry);
     }
     
     /*
@@ -84,41 +110,57 @@ public class JournalActivity extends Activity implements V2Activity {
     public LinearLayout createEntryRow(Entry entry) {
     	LinearLayout entryLayout = createLinearLayout(LinearLayout.VERTICAL);
     	View[] views = new View[] { createHiddenIdView(entry), createIsJournalLockedView(entry), 
-    			createDateTextView(entry.getDate()), createNewEntryView(entry.getDate()), createButtonView() };
+    			createDateTextView(entry.getDate()), createNewEntryView(entry.getDate(), entry.getContent()), createButtonView() };
     	addViewsToLayout(views, entryLayout);
     	return entryLayout;
     }
     
     /*
-     * Removes an Entry from the User.
+     * Removes an Entry from the user.
      * view is the View component that was clicked.
      */
     public void removeEntry(View view) {
     	LinearLayout parent = (LinearLayout)view.getParent().getParent();
-    	long id = -1;
+    	int id = -1;
     	View child = parent.getChildAt(ID_POSITION);
-    	id = Long.parseLong(((TextView) child).getText().toString());
-    	List<Entry> tempEntries = User.getJournal().getEntries();
-    	tempEntries.remove(User.getJournal().findEntryById(id));
-    	User.getJournal().setEntries(tempEntries);
+    	id = Integer.parseInt(((TextView) child).getText().toString());
+    	try {
+			entryDao.delete(findEntryById(id));
+			journalDao.update(journal);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
     	parent.removeAllViews();
     	parent.setVisibility(View.GONE);
+    }
+    
+    private Entry findEntryById(int id) throws SQLException {
+    	for(Entry e : entryDao.queryForAll()) {
+    		if(e.getJournal().getId() == journal.getId()) {
+    			if(e.getId() == id) return e;
+    		}
+    	}
+    	return null;
     }
     
     /*
      * Sets the TextChangedListener of an EditText.
      * entry is the EditText to be modified.
      */
-    private void setEntryListener(final EditText entry) {
-		entry.addTextChangedListener(new TextWatcher() {
+    private void setEntryListener(final EditText entryTextField) {
+		entryTextField.addTextChangedListener(new TextWatcher() {
     		public void afterTextChanged(Editable s) {
 				try {
-					User.getJournal().findEntryById(findId(entry)).setContent(entry.getText().toString());
+					Entry entry = findEntryById(findId(entryTextField));
+					entry.setContent(entryTextField.getText().toString());
+					entryDao.update(entry);
+					journalDao.update(journal);
 				}
 				catch(NullPointerException e) {
 					e.printStackTrace();
-				}
-				catch(NumberFormatException e) {
+				} catch(NumberFormatException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
@@ -191,12 +233,13 @@ public class JournalActivity extends Activity implements V2Activity {
     	return id;
     }
     
-    private EditText createNewEntryView(Date dateCreated) {
+    private EditText createNewEntryView(Date dateCreated, String content) {
     	final EditText entry = new EditText(this);
     	entry.setPadding(10, 10, 10, 10);
     	entry.setBackgroundColor(Color.WHITE);
     	entry.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
     	entry.setHint("Write a message here...");
+    	entry.setText(content);
     	entry.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
     	setEntryListener(entry);
     	return entry;

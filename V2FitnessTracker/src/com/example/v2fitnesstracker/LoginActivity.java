@@ -1,19 +1,24 @@
 package com.example.v2fitnesstracker;
 
-import android.os.Bundle;
-import android.annotation.SuppressLint;
-import android.app.Activity;
+import java.io.IOException;
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
-public class LoginActivity extends Activity{
+import com.example.databases.DatabaseHelper;
+import com.example.entities.User;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+
+public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	
 	public final static String USERNAME_PACKAGE = "com.example.v2fitnesstracker.USERNAME";
 	public final static String PASSWORD_PACKAGE = "com.example.v2fitnesstracker.PASSWORD";
-	
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,17 +32,39 @@ public class LoginActivity extends Activity{
         return true;
     }
 
-    public void login(View view) {
+    public void login(View view) throws IOException, ClassNotFoundException {
     	// An Intent to start an activity called HomeActivity
     	Intent loginIntent = new Intent(this, HomeActivity.class);
 
-    	if(isEmpty(R.id.username_input) || isEmpty(R.id.password_input)) {
+    	String username = ((EditText)findViewById(R.id.username_input)).getText().toString();
+    	String password = ((EditText)findViewById(R.id.password_input)).getText().toString();
+    	
+    	if(username.length() == 0 || password.length() == 0) {
     		showErrorMessage("Both username and password fields must not be empty.");
     		return;
     	}
     	
-    	User.setUsername(((EditText)findViewById(R.id.username_input)).getText().toString());
-    	User.setPassword(((EditText)findViewById(R.id.password_input)).getText().toString());
+    	RuntimeExceptionDao<User, Integer> dao = getHelper().getRuntimeUserDao();
+    	// Checks for an existing username
+    	List<User> users = dao.queryForAll();
+    	boolean exists = false;
+    	boolean passwordMatches = false;
+    	for(User u : users) {
+    		if(u.getUsername().equalsIgnoreCase(username)) {
+    			exists = true;
+    			if(u.getPassword().equals(password)) passwordMatches = true;
+    			break;
+    		}
+    	}
+    	// If username does not exist, do not log in
+    	if(!exists) {
+    		showErrorMessage("Username does not exist");
+    		return;
+    	}
+    	else if(exists && !passwordMatches) {
+    		showErrorMessage("Password does not match the username");
+    		return;
+    	}
     	
     	// Adds the username and password elements' contents to the Intent
     	addToIntent(loginIntent, R.id.username_input, USERNAME_PACKAGE);

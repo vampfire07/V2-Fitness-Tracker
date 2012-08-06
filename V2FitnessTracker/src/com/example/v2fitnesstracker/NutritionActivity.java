@@ -1,9 +1,10 @@
 package com.example.v2fitnesstracker;
 
-import android.os.Bundle;
-import android.app.Activity;
+import java.sql.SQLException;
+
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -17,7 +18,16 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class NutritionActivity extends Activity implements V2Activity {
+import com.example.databases.DatabaseHelper;
+import com.example.entities.Food;
+import com.example.entities.User;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+
+public class NutritionActivity extends OrmLiteBaseActivity<DatabaseHelper> implements V2Activity {
+	
+	private User user;
+	private RuntimeExceptionDao<Food, Integer> dao;
 	
 	private final String FIELD_NAME = "NAME";
 	private final String FIELD_AMOUNT = "AMOUNT";
@@ -26,6 +36,8 @@ public class NutritionActivity extends Activity implements V2Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = HomeActivity.user;
+        dao = getHelper().getRuntimeFoodDao();
         setContentView(R.layout.activity_nutrition);
         setNavigationButtons();
         updateView();
@@ -38,31 +50,43 @@ public class NutritionActivity extends Activity implements V2Activity {
     }
     
     public void addRow(View view) {
-    	Food newFood = new Food(User.foodId++, "", "", 0);
-    	User.addFood(newFood);
+    	Food newFood = new Food();
+    	newFood.setName("");
+    	newFood.setUser(user);
+    	dao.create(newFood);
     	updateView();
     }
     
     public void removeRow(View view) {
     	LinearLayout parent = (LinearLayout)view.getParent();
-    	long id = -1;
+    	int id = -1;
     	for(int i = 0; i < parent.getChildCount(); i++) {
     		View child = parent.getChildAt(i);
     		if(child instanceof TextView) {
-    			id = Long.parseLong(((TextView) child).getText().toString());
+    			id = Integer.parseInt(((TextView) child).getText().toString());
     			break;
     		}
     	}
-    	User.removeFood(User.findFoodById(id));
+    	dao.delete(findFoodById(id));
     	parent.removeAllViews();
     	parent.setVisibility(View.GONE);
+    }
+    
+    private Food findFoodById(int id) {
+    	for(Food f : dao.queryForAll()) {
+    		if(f.getUser().getId() == user.getId()) {
+    			if(f.getId() == id) return f;
+    		}
+    	}
+    	return null;
     }
     
     private void updateView() {
     	TableLayout foodLayout = (TableLayout)findViewById(R.id.nutrition_foodLayout);
     	foodLayout.removeAllViews();
-    	for(Food f : User.getFoods()) {
-    		foodLayout.addView(createFoodRow(f));
+    	for(Food f : dao.queryForAll()) {
+    		if(f.getUser().getId() == user.getId())
+    			foodLayout.addView(createFoodRow(f));
     	}
     }
     
@@ -131,12 +155,14 @@ public class NutritionActivity extends Activity implements V2Activity {
     	text.addTextChangedListener(new TextWatcher() {
     		public void afterTextChanged(Editable s) {
 				try {
+					Food food = findFoodById(findId(text));
 					if(field.equals(FIELD_NAME))
-						User.findFoodById(findId(text)).setName(text.getText().toString());
+						food.setName(text.getText().toString());
 					else if(field.equals(FIELD_AMOUNT))
-						User.findFoodById(findId(text)).setAmount(text.getText().toString());
+						food.setAmount(text.getText().toString());
 					else if(field.equals(FIELD_CALORIES))
-						User.findFoodById(findId(text)).setCalories(Integer.parseInt(text.getText().toString()));
+						food.setCalories(Integer.parseInt(text.getText().toString()));
+					dao.update(food);
 				}
 				catch(NullPointerException e) {
 				}
@@ -152,12 +178,12 @@ public class NutritionActivity extends Activity implements V2Activity {
     	});
     }
     
-    private long findId(View view) {
+    private int findId(View view) {
 		LinearLayout viewParent = (LinearLayout)view.getParent();
 		View idView = viewParent.getChildAt(0);
 		// The id field is a TextView located at index 0 of the layout.
 		if(idView instanceof TextView) {
-			return Long.parseLong(((TextView) idView).getText().toString());
+			return Integer.parseInt(((TextView) idView).getText().toString());
 		}
 		return -1;
 	}

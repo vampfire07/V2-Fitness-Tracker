@@ -2,23 +2,37 @@ package com.example.v2fitnesstracker;
 
 import java.text.DecimalFormat;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-public class HomeActivity extends Activity implements V2Activity {
+import com.example.databases.DatabaseHelper;
+import com.example.entities.User;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+
+public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements V2Activity {
+	
+	public static User user;
+	private RuntimeExceptionDao<User, Integer> dao;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dao = getHelper().getRuntimeUserDao();
+        int id = getIntent().getIntExtra("user_id", -1);
+        
+        for(User u : dao.queryForAll()) {
+        	if(u.getId() == id) user = u;
+        }
+//        user = (User)(getIntent().getSerializableExtra("user"));
         setContentView(R.layout.activity_home);
         initializeInformation();
         setNavigationButtons();
@@ -28,13 +42,13 @@ public class HomeActivity extends Activity implements V2Activity {
      * Displays the username and password to the appropriate text fields.
      */
     public void initializeInformation() {
-    	((EditText)findViewById(R.id.home_username)).setText(User.getUsername());
-    	((EditText)findViewById(R.id.home_password)).setText(User.getPassword());
-    	((EditText)findViewById(R.id.home_age)).setText(User.getAge() + "");
-    	((EditText)findViewById(R.id.home_heightFeet)).setText(User.getHeight_feet() + "");
-    	((EditText)findViewById(R.id.home_heightInches)).setText(User.getHeight_inches() + "");
-    	((EditText)findViewById(R.id.home_weight)).setText(User.getWeight() + "");
-    	((EditText)findViewById(R.id.home_goalWeight)).setText(User.getGoal_weight() + "");
+    	((EditText)findViewById(R.id.home_username)).setText(user.getUsername());
+    	((EditText)findViewById(R.id.home_password)).setText(user.getPassword());
+    	((EditText)findViewById(R.id.home_age)).setText(user.getAge() + "");
+    	((EditText)findViewById(R.id.home_heightFeet)).setText(user.getHeightFeet() + "");
+    	((EditText)findViewById(R.id.home_heightInches)).setText(user.getHeightInches() + "");
+    	((EditText)findViewById(R.id.home_weight)).setText(user.getWeight() + "");
+    	((EditText)findViewById(R.id.home_goalWeight)).setText(user.getGoalWeight() + "");
     }
     
     private AlertDialog.Builder createInputDialog(String title, String message) {
@@ -61,7 +75,8 @@ public class HomeActivity extends Activity implements V2Activity {
 				String newUsername = input.getText().toString();
 				if(newUsername != null || newUsername.length() != 0) {
 					if(newUsername.length() <= 15) {
-						User.setUsername(newUsername);
+						user.setUsername(newUsername);
+						dao.update(user);
 						((EditText)findViewById(R.id.home_username)).setText(newUsername);
 					}
 					else showAlertMessage("Username must contain only up to 15 characters.", true);
@@ -89,7 +104,8 @@ public class HomeActivity extends Activity implements V2Activity {
 				String newPassword = input.getText().toString();
 				if(newPassword != null || newPassword.length() != 0) {
 					if(newPassword.length() <= 15) {
-						User.setUsername(newPassword);
+						user.setPassword(newPassword);
+						dao.update(user);
 						((EditText)findViewById(R.id.home_password)).setText(newPassword);
 					}
 					else showAlertMessage("Password must contain only up to 15 characters.", true);
@@ -103,11 +119,12 @@ public class HomeActivity extends Activity implements V2Activity {
     // Updates the user information (age, weight, goal weight, height)
     public void update(View view) {
     	try {
-	    	User.setAge(Integer.parseInt(((EditText)findViewById(R.id.home_age)).getText().toString()));
-	    	User.setWeight(Integer.parseInt(((EditText)findViewById(R.id.home_weight)).getText().toString()));
-	    	User.setGoal_weight(Integer.parseInt(((EditText)findViewById(R.id.home_goalWeight)).getText().toString()));
-	    	User.setHeight_feet(Integer.parseInt(((EditText)findViewById(R.id.home_heightFeet)).getText().toString()));
-	    	User.setHeight_inches(Integer.parseInt(((EditText)findViewById(R.id.home_heightInches)).getText().toString()));
+	    	user.setAge(Integer.parseInt(((EditText)findViewById(R.id.home_age)).getText().toString()));
+	    	user.setWeight(Integer.parseInt(((EditText)findViewById(R.id.home_weight)).getText().toString()));
+	    	user.setGoalWeight(Integer.parseInt(((EditText)findViewById(R.id.home_goalWeight)).getText().toString()));
+	    	user.setHeightFeet(Integer.parseInt(((EditText)findViewById(R.id.home_heightFeet)).getText().toString()));
+	    	user.setHeightInches(Integer.parseInt(((EditText)findViewById(R.id.home_heightInches)).getText().toString()));
+	    	dao.update(user);
 	    	showAlertMessage("Information has been updated", true);
     	}
     	catch(NumberFormatException e) {
@@ -128,10 +145,10 @@ public class HomeActivity extends Activity implements V2Activity {
     // Calculates BMI Index and returns the result in one decimal place.
     public double calculateBMIIndex() {
     	double index = 0;
-    	int heightInInches = (User.getHeight_feet() * 12) + User.getHeight_inches();
+    	int heightInInches = (user.getHeightFeet() * 12) + user.getHeightInches();
     	if(heightInInches != 0) {
     		double squared = Math.pow(heightInInches, 2);
-    		double preResult = User.getWeight() / squared;
+    		double preResult = user.getWeight() / squared;
     		double BMI_formula = preResult * 703;
     		index = Double.parseDouble(new DecimalFormat("#0.0").format(BMI_formula));
     	}

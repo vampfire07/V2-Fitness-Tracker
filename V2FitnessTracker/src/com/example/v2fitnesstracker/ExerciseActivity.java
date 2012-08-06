@@ -1,10 +1,11 @@
 package com.example.v2fitnesstracker;
 
-import android.os.Bundle;
-import android.app.Activity;
+import java.sql.SQLException;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -22,7 +23,16 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class ExerciseActivity extends Activity implements V2Activity {
+import com.example.databases.DatabaseHelper;
+import com.example.entities.Exercise;
+import com.example.entities.User;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+
+public class ExerciseActivity extends OrmLiteBaseActivity<DatabaseHelper> implements V2Activity {
+	
+	private User user;
+	private RuntimeExceptionDao<Exercise, Integer> dao;
 	
 	private final String FIELD_NAME = "NAME";
 	private final String FIELD_SETS = "SETS";
@@ -31,6 +41,8 @@ public class ExerciseActivity extends Activity implements V2Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = HomeActivity.user;
+        dao = getHelper().getRuntimeExerciseDao();
         setContentView(R.layout.activity_exercise);
         setNavigationButtons();
         updateView();
@@ -49,24 +61,34 @@ public class ExerciseActivity extends Activity implements V2Activity {
     
     public void removeRow(View view) {
     	LinearLayout parent = (LinearLayout)view.getParent();
-    	long id = -1;
+    	int id = -1;
     	for(int i = 0; i < parent.getChildCount(); i++) {
     		View child = parent.getChildAt(i);
     		if(child instanceof TextView) {
-    			id = Long.parseLong(((TextView) child).getText().toString());
+    			id = Integer.parseInt(((TextView) child).getText().toString());
     			break;
     		}
     	}
-    	User.removeExercise(User.findExerciseById(id));
+    	dao.delete(findExerciseById(id));
     	parent.removeAllViews();
     	parent.setVisibility(View.GONE);
+    }
+    
+    private Exercise findExerciseById(int id) {
+    	for(Exercise e : dao.queryForAll()) {
+    		if(e.getUser().getId() == user.getId())
+    			if(e.getId() == id) return e;
+    	}
+    	return null;
     }
     
     public void updateView() {
     	TableLayout exerciseLayout = (TableLayout)findViewById(R.id.exercise_exerciseLayout);
     	exerciseLayout.removeAllViews();
-    	for(Exercise e : User.getExercises()) {
-    		exerciseLayout.addView(createExerciseRow(e));
+    	
+    	for(Exercise e : dao.queryForAll()) {
+    		if(e.getUser().getId() == user.getId())
+    			exerciseLayout.addView(createExerciseRow(e));
     	}
     }
     
@@ -99,7 +121,7 @@ public class ExerciseActivity extends Activity implements V2Activity {
 			// Sets the listener that triggers when the selected item changes
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
-		    	User.findExerciseById(findId(spinner)).setType(spinner.getSelectedItem().toString());
+		    	findExerciseById(findId(spinner)).setType(spinner.getSelectedItem().toString());
 			}
 			public void onNothingSelected(AdapterView<?> arg0) {
 				spinner.setSelection(0);
@@ -111,12 +133,14 @@ public class ExerciseActivity extends Activity implements V2Activity {
     	text.addTextChangedListener(new TextWatcher() {
     		public void afterTextChanged(Editable s) {
 				try {
+					Exercise exercise = findExerciseById(findId(text));
 					if(field.equals(FIELD_NAME))
-						User.findExerciseById(findId(text)).setName(text.getText().toString());
+						exercise.setName(text.getText().toString());
 					else if(field.equals(FIELD_SETS))
-						User.findExerciseById(findId(text)).setSets(Integer.parseInt(text.getText().toString()));
+						exercise.setSets(Integer.parseInt(text.getText().toString()));
 					else if(field.equals(FIELD_REPS))
-						User.findExerciseById(findId(text)).setReps(Integer.parseInt(text.getText().toString()));
+						exercise.setReps(Integer.parseInt(text.getText().toString()));
+					dao.update(exercise);
 				}
 				catch(NullPointerException e) {
 				}
@@ -149,12 +173,12 @@ public class ExerciseActivity extends Activity implements V2Activity {
     	return removeButton;
 	}
 	
-	private long findId(View view) {
+	private int findId(View view) {
 		LinearLayout viewParent = (LinearLayout)view.getParent();
 		View idView = viewParent.getChildAt(0);
 		// The id field is a TextView located at index 0 of the layout.
 		if(idView instanceof TextView) {
-			return Long.parseLong(((TextView) idView).getText().toString());
+			return Integer.parseInt(((TextView) idView).getText().toString());
 		}
 		return -1;
 	}
@@ -264,7 +288,12 @@ public class ExerciseActivity extends Activity implements V2Activity {
     	okButton.setText("OK");
     	okButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				User.addExercise(new Exercise(User.exerciseId++, "", getExerciseType(spinner), 0, 0));
+				Exercise exercise = new Exercise();
+				exercise.setName("");
+				exercise.setType(getExerciseType(spinner));
+				exercise.setUser(user);
+				dao.create(exercise);
+				
 				updateView();
 				dialog.dismiss();
 			}

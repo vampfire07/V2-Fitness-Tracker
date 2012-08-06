@@ -1,5 +1,7 @@
 package com.example.v2fitnesstracker;
 
+import com.example.enums.Pages;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

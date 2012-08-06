@@ -1,7 +1,7 @@
 package com.example.tests;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -12,7 +12,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.v2fitnesstracker.*;
+import com.example.entities.Entry;
+import com.example.entities.User;
+import com.example.v2fitnesstracker.JournalActivity;
 
 public class JournalActivityTester extends ActivityInstrumentationTestCase2<JournalActivity> {
 	
@@ -36,39 +38,37 @@ public class JournalActivityTester extends ActivityInstrumentationTestCase2<Jour
 	
 	@SmallTest
 	public void testAddEntry() {
-		User.getJournal().setEntries(new ArrayList<Entry>());
-		final Date dateCreated = new Date();
+		final User user = new User();
+//		user.getJournal().setEntries(new HashSet<Entry>());
 		Button button = new Button(activity);
 		button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				User.getJournal().addEntry(new Entry(1, "Blah", dateCreated));
+				Entry entry = new Entry();
+				entry.setId(1);
+				entry.setDate(new Date());
+//				user.getJournal().addEntry(entry);
 			}
 		});
 		// Asserts that the journal is empty
-		assertTrue(User.getJournal().getEntries().size() == 0);
+		assertTrue(user.getJournal().getEntries().size() == 0);
 		
 		// Asserts that the button contains a listener, calls button click
 		assertTrue(button.callOnClick());
 		
 		// Asserts that the click triggered for a new Entry to be created
-		assertTrue(User.getJournal().getEntries().size() == 1);
-		assertTrue(User.getJournal().getEntries().get(0).getId() == 1);
-		assertTrue(User.getJournal().getEntries().get(0).getContent().equals("Blah"));
-		assertTrue(User.getJournal().getEntries().get(0).getDate().equals(dateCreated));
+		assertTrue(user.getJournal().getEntries().size() == 1);
 	}
 	
 	@SmallTest
 	public void testRemoveEntry() {
-		User.getJournal().setEntries(new ArrayList<Entry>());
-		
-		// Asserts that the initial size of the User entries is 0
-		assertTrue(User.getJournal().getEntries().size() == 0);
-		
-		Entry entry = new Entry(1, "Blah", new Date());
-		User.getJournal().addEntry(entry);
+		final User user = new User();
+		Entry entry = new Entry();
+		entry.setId(1);
+		entry.setDate(new Date());
+//		user.getJournal().addEntry(entry);
 		
 		// Asserts that the entry was added
-		assertTrue(User.getJournal().getEntries().size() == 1);
+		assertTrue(user.getJournal().getEntries().size() == 1);
 		
 		// A row layout is being created
 		LinearLayout layout = new LinearLayout(activity);
@@ -92,7 +92,7 @@ public class JournalActivityTester extends ActivityInstrumentationTestCase2<Jour
 		assertTrue(button.callOnClick());
 		
 		// Asserts that the entry was removed
-		assertTrue(User.getJournal().getEntries().size() == 0);
+		assertTrue(user.getJournal().getEntries().size() == 0);
 	}
 	
 	@SmallTest
@@ -100,7 +100,10 @@ public class JournalActivityTester extends ActivityInstrumentationTestCase2<Jour
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				Date dateCreated = new Date();
-				LinearLayout row = activity.createEntryRow(new Entry(1, "Hi", dateCreated));
+				Entry entry = new Entry();
+				entry.setId(1);
+				entry.setDate(dateCreated);
+				LinearLayout row = activity.createEntryRow(entry);
 				EditText journal = (EditText)row.getChildAt(3);
 				LinearLayout buttonLayout = (LinearLayout)row.getChildAt(4);
 				Button lockUnlockButton = (Button)buttonLayout.getChildAt(0);
