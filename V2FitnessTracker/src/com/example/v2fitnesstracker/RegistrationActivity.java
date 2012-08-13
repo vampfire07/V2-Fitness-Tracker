@@ -2,7 +2,6 @@ package com.example.v2fitnesstracker;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -22,6 +21,7 @@ public class RegistrationActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	public final static String USERNAME_PACKAGE = "com.example.v2fitnesstracker.USERNAME";
 	public final static String PASSWORD_PACKAGE = "com.example.v2fitnesstracker.PASSWORD";
 
+	// Database Access Objects (DAOs)
 	private RuntimeExceptionDao<User, Integer> userDao;
 	private RuntimeExceptionDao<Journal, Integer> journalDao;
 	
@@ -39,15 +39,6 @@ public class RegistrationActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		return true;
 	}
 
-	public void back(View view) {
-		// Get the Intent that started this Activity
-		Intent backToLogin = new Intent(this, LoginActivity.class);
-
-		// Close this Activity and start the Activity defined by the Intent
-		finish();
-		startActivity(backToLogin);
-	}
-
 	public void register(View view) throws IOException, ClassNotFoundException {
 		// An Intent to start an activity called HomeActivity
 		Intent loginIntent = new Intent(this, HomeActivity.class);
@@ -63,36 +54,52 @@ public class RegistrationActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		}
 
 		// Checks for duplicate usernames
-		List<User> users = userDao.queryForAll();
-		for (User u : users) {
-			if (u.getUsername().equalsIgnoreCase(username)) {
-				showErrorMessage("Username is already taken. Choose a different one.");
-				return;
-			}
-		}
-
+		if(checkDuplicateUsername(username)) return;
+		
 		// Creates a new instance of user
 		User user = createNewUser(username, password);
 		
 		// Stores the user into the database
 		userDao.create(user);
 		
-		// Adds the username, password and date registered to the Intent
-		addToIntent(loginIntent, R.id.user_username, USERNAME_PACKAGE);
-		addToIntent(loginIntent, R.id.user_password, PASSWORD_PACKAGE);
-		loginIntent.putExtra("user_id", user.getId());
+		// Adds the username, password and user id to the Intent
+		addExtraData(loginIntent, user);
 
 		// Finishes this Activity and starts a new one
 		// finish();
 		startActivity(loginIntent);
 	}
+	
+	public void back(View view) {
+		// Get the Intent that started this Activity
+		Intent backToLogin = new Intent(this, LoginActivity.class);
 
+		// Close this Activity and start the Activity defined by the Intent
+		finish();
+		startActivity(backToLogin);
+	}
+
+	// Adds the username, password and user id to the Intent
+	private void addExtraData(Intent loginIntent, User user) {
+		addToIntent(loginIntent, R.id.user_username, USERNAME_PACKAGE);
+		addToIntent(loginIntent, R.id.user_password, PASSWORD_PACKAGE);
+		loginIntent.putExtra("user_id", user.getId());
+	}
+	
+	// Checks for duplicate usernames
+	private boolean checkDuplicateUsername(String username) {
+		for(User u : userDao.queryForAll()) {
+			if(u.getUsername().equalsIgnoreCase(username)) {
+				showErrorMessage("Username is already taken. Choose a different one.");
+				return true;	
+			}
+		}
+		return false;
+	}
+
+	// Creates a User upon registration
 	private User createNewUser(String username, String password) {
-		User user = new User();
-		user.setUsername(username);
-		user.setPassword(password);
-		user.setRegistered(new Date());
-		
+		User user = new User(username, password, new Date());
 		Journal journal = new Journal();
 		journal.setUser(user);
 		journalDao.create(journal);

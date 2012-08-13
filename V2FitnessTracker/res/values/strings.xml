@@ -75,4 +75,7 @@
     <string name="journal_lock">Lock</string>
     <string name="journal_clear">Clear</string>
     <string name="journal_removeButton">Remove</string>
+    <string-array name="paired_devices"></string-array>
+    <string name="home_bluetoothShare">Share</string>
+    <string name="home_bluetoothListen">Listen</string>
 </resources>

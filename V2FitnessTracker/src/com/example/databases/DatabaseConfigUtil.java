@@ -7,6 +7,9 @@ import com.example.entities.Journal;
 import com.example.entities.User;
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
 
+/*
+ * Only used for creation of ORMLite config in the raw folder.
+ */
 public class DatabaseConfigUtil extends OrmLiteConfigUtil{
 
 	private static final Class<?>[] classes = new Class[] { Entry.class, Exercise.class, 

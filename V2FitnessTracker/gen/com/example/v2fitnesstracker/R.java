@@ -10,6 +10,7 @@ package com.example.v2fitnesstracker;
 public final class R {
     public static final class array {
         public static final int exercise_types=0x7f060000;
+        public static final int paired_devices=0x7f060001;
     }
     public static final class attr {
     }
@@ -96,6 +97,8 @@ public final class R {
         public static final int exercise_header_type=0x7f05002f;
         public static final int home_BMIText=0x7f05001f;
         public static final int home_ageText=0x7f050024;
+        public static final int home_bluetoothListen=0x7f05003c;
+        public static final int home_bluetoothShare=0x7f05003b;
         public static final int home_calculateBMI=0x7f050023;
         public static final int home_changeText=0x7f05001d;
         public static final int home_classificationText=0x7f050021;

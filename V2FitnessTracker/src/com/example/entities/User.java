@@ -3,6 +3,7 @@ package com.example.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Set;
 
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
@@ -51,8 +52,17 @@ public class User implements Serializable {
 	@DatabaseField(foreign = true)
 	private Journal journal;
 	
+	private Set<Exercise> exerciseSet;
+	private Set<Food> foodSet;
+	
 	public User() {
-		
+		// No-arg constructor used by ORMLite
+	}
+	
+	public User(String username, String password, Date registered) {
+		this.username = username;
+		this.password = password;
+		this.registered = registered;
 	}
 	
 	public void clearData() {
@@ -223,5 +233,21 @@ public class User implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Set<Exercise> getExerciseSet() {
+		return exerciseSet;
+	}
+
+	public void setExerciseSet(Set<Exercise> exerciseSet) {
+		this.exerciseSet = exerciseSet;
+	}
+
+	public Set<Food> getFoodSet() {
+		return foodSet;
+	}
+
+	public void setFoodSet(Set<Food> foodSet) {
+		this.foodSet = foodSet;
 	}
 }

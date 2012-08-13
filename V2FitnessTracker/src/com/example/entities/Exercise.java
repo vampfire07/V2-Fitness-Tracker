@@ -2,10 +2,6 @@ package com.example.entities;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -33,7 +29,14 @@ public class Exercise implements Serializable {
 	private User user;
 	
 	public Exercise() {
-		
+		// No-arg constructor used by ORMLite
+	}
+	
+	public Exercise(String name, String type, int sets, int reps) {
+		this.name = name;
+		this.type = type;
+		this.sets = sets;
+		this.reps = reps;
 	}
 
 	public String getName() {

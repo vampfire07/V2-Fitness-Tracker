@@ -35,16 +35,16 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     public void login(View view) throws IOException, ClassNotFoundException {
     	// An Intent to start an activity called HomeActivity
     	Intent loginIntent = new Intent(this, HomeActivity.class);
-
     	String username = ((EditText)findViewById(R.id.username_input)).getText().toString();
     	String password = ((EditText)findViewById(R.id.password_input)).getText().toString();
+    	RuntimeExceptionDao<User, Integer> dao = getHelper().getRuntimeUserDao();
     	
+    	// Checks for empty fields
     	if(username.length() == 0 || password.length() == 0) {
     		showErrorMessage("Both username and password fields must not be empty.");
     		return;
     	}
     	
-    	RuntimeExceptionDao<User, Integer> dao = getHelper().getRuntimeUserDao();
     	// Checks for an existing username
     	List<User> users = dao.queryForAll();
     	boolean exists = false;

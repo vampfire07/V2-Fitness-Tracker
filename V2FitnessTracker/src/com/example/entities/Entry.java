@@ -23,7 +23,12 @@ public class Entry implements Serializable {
 	private Journal journal;
 	
 	public Entry() {
-		
+		// No-arg constructor used by ORMLite
+	}
+	
+	public Entry(String content, Date date) {
+		this.content = content;
+		this.date = date;
 	}
 	
 	public String getContent() {

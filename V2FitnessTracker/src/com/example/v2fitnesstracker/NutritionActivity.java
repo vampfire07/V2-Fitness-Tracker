@@ -1,6 +1,6 @@
 package com.example.v2fitnesstracker;
 
-import java.sql.SQLException;
+import java.util.HashSet;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -27,6 +27,8 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 public class NutritionActivity extends OrmLiteBaseActivity<DatabaseHelper> implements V2Activity {
 	
 	private User user;
+	
+	// Database Access Object (DAO)
 	private RuntimeExceptionDao<Food, Integer> dao;
 	
 	private final String FIELD_NAME = "NAME";
@@ -50,8 +52,7 @@ public class NutritionActivity extends OrmLiteBaseActivity<DatabaseHelper> imple
     }
     
     public void addRow(View view) {
-    	Food newFood = new Food();
-    	newFood.setName("");
+    	Food newFood = new Food("", "", 0);
     	newFood.setUser(user);
     	dao.create(newFood);
     	updateView();
@@ -84,9 +85,11 @@ public class NutritionActivity extends OrmLiteBaseActivity<DatabaseHelper> imple
     private void updateView() {
     	TableLayout foodLayout = (TableLayout)findViewById(R.id.nutrition_foodLayout);
     	foodLayout.removeAllViews();
+    	user.setFoodSet(new HashSet<Food>());
     	for(Food f : dao.queryForAll()) {
-    		if(f.getUser().getId() == user.getId())
+    		if(f.getUser().getId() == user.getId()) 
     			foodLayout.addView(createFoodRow(f));
+    		user.getFoodSet().add(f);
     	}
     }
     
@@ -178,6 +181,7 @@ public class NutritionActivity extends OrmLiteBaseActivity<DatabaseHelper> imple
     	});
     }
     
+    // Returns the id of the Food contained in the View.
     private int findId(View view) {
 		LinearLayout viewParent = (LinearLayout)view.getParent();
 		View idView = viewParent.getChildAt(0);

@@ -2,6 +2,7 @@ package com.example.v2fitnesstracker;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashSet;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -29,6 +30,8 @@ public class JournalActivity extends OrmLiteBaseActivity<DatabaseHelper> impleme
 
 	private User user;
 	private Journal journal;
+	
+	// Database Access Objects (DAOs)
 	private RuntimeExceptionDao<Journal, Integer> journalDao;
 	private RuntimeExceptionDao<Entry, Integer> entryDao;
 	
@@ -64,9 +67,11 @@ public class JournalActivity extends OrmLiteBaseActivity<DatabaseHelper> impleme
     public void updateView() {
     	LinearLayout overallLayout = (LinearLayout)(findViewById(R.id.journal_overallLayout));
     	overallLayout.removeViews(3, overallLayout.getChildCount() - 3);
+    	user.getJournal().setEntrySet(new HashSet<Entry>());
     	for(Entry e : entryDao.queryForAll()) {
     		if(e.getJournal() == journal)
     			overallLayout.addView(createEntryRow(e));
+    		user.getJournal().getEntrySet().add(e);
     	}
     }
     

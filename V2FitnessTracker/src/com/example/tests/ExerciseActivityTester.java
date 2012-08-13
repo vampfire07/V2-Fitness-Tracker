@@ -1,8 +1,7 @@
 package com.example.tests;
 
-import java.util.HashSet;
-
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,17 +9,21 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.databases.DatabaseHelper;
 import com.example.entities.Exercise;
 import com.example.entities.User;
 import com.example.v2fitnesstracker.ExerciseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 public class ExerciseActivityTester extends ActivityInstrumentationTestCase2<ExerciseActivity> {
 	
 	ExerciseActivity activity;
+	private DatabaseHelper helper;
 	
 	public ExerciseActivityTester(String name) {
 		super(ExerciseActivity.class);
 		setName(name);
+		helper = new DatabaseHelper(getActivity());
 	}
 	
 	protected void setUp() throws Exception {
@@ -47,12 +50,14 @@ public class ExerciseActivityTester extends ActivityInstrumentationTestCase2<Exe
 			}
 		});
 		// Asserts that the user Exercises is empty
+		// assertEquals()
 		assertTrue(user.getExercises().size() == 0);
 		
 		// Asserts that the button contains a listener
 		assertTrue(button.callOnClick());
 		
 		// Asserts that the click triggered for a new Exercise to be created
+		// assertEquals()
 		assertTrue(user.getExercises().size() == 1);
 	}
 	
@@ -86,6 +91,23 @@ public class ExerciseActivityTester extends ActivityInstrumentationTestCase2<Exe
 		
 		// Asserts that the exercise was removed
 		assertTrue(user.getExercises().size() == 0);
+	}
+	
+	@MediumTest
+	public void testAddExerciseDb() {
+		RuntimeExceptionDao<Exercise, Integer> dao = helper.getRuntimeExerciseDao();
+		dao.create(new Exercise("", "", 0, 0));
+		int count = dao.queryForAll().size();
+		assertEquals(count, 1);
+	}
+	
+	@MediumTest
+	public void testRemoveExerciseDb() {
+		RuntimeExceptionDao<Exercise, Integer> dao = helper.getRuntimeExerciseDao();
+		dao.create(new Exercise("Bicep Curl", "", 0, 0));
+		dao.delete(new Exercise("Bicep Curl", "", 0, 0));
+		int count = dao.queryForAll().size();
+		assertEquals(count, 0);
 	}
 }
 

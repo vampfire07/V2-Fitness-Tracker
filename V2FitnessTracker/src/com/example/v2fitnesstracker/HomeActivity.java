@@ -1,27 +1,48 @@
 package com.example.v2fitnesstracker;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.example.bluetooth.AcceptThread;
+import com.example.bluetooth.ConnectionThread;
 import com.example.databases.DatabaseHelper;
+import com.example.entities.Exercise;
 import com.example.entities.User;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements V2Activity {
 	
+	private static final int DEVICE_ADDRESS_INDEX = 1;
+	private BluetoothDevice remoteDevice;
+	
 	public static User user;
-	private RuntimeExceptionDao<User, Integer> dao;
+	
+	// Database Access Objects (DAOs)
+	private static RuntimeExceptionDao<User, Integer> dao;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,10 +53,181 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
         for(User u : dao.queryForAll()) {
         	if(u.getId() == id) user = u;
         }
-//        user = (User)(getIntent().getSerializableExtra("user"));
         setContentView(R.layout.activity_home);
         initializeInformation();
         setNavigationButtons();
+    }
+    
+    /*
+     * Sets the device up to listen for connections.
+     * Also enables Bluetooth and makes the device discoverable. 
+     */
+    public void listen(View view) {
+    	BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    	if(mBluetoothAdapter == null) {
+			showAlertMessage("Your device does not support Bluetooth", true);
+			return;
+		}
+		
+		if(!mBluetoothAdapter.isEnabled()) {
+			/* Allow for the device to be discovered by Bluetooth-enabled devices for 300 seconds.
+			 * Also enables Bluetooth.
+			 */
+			enableDiscoverable();
+		}
+		AcceptThread acceptThread = new AcceptThread(mBluetoothAdapter);
+		acceptThread.run();
+    }
+    
+    public static void saveReceivedUser(User user) {
+    	for(User u : dao.queryForAll()) {
+    		if(u.getUsername().equalsIgnoreCase(user.getUsername())) {
+    			dao.update(user);
+    			return;
+    		}
+    	}
+    	dao.create(user);
+    }
+    
+    /*
+     * Sets the device up to search for Bluetooth-enabled remote devices.
+     * Also enables Bluetooth and makes the device discoverable. 
+     */
+    public void bluetoothShare(View view) {
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		if(mBluetoothAdapter == null) {
+			showAlertMessage("Your device does not support Bluetooth", true);
+			return;
+		}
+		
+		if(!mBluetoothAdapter.isEnabled()) {
+			/* Allow for the device to be discovered by Bluetooth-enabled devices for 300 seconds.
+			 * Also enables Bluetooth.
+			 */
+			enableDiscoverable();
+		}
+		
+		mBluetoothAdapter.startDiscovery();
+		
+		final ArrayAdapter<CharSequence> deviceList = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+		// Store into a Set all the devices that have been paired to this device, if any
+		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+		// If there is any paired device
+		if(pairedDevices.size() > 0) {
+			for(BluetoothDevice device : pairedDevices) {
+				deviceList.add(device.getName() + "\n" + device.getAddress());
+			}
+		}
+		
+		/* Create a BroadcastReceiver that listens for an action
+		 * Action is called ACTION_FOUND 
+		*/
+		final BroadcastReceiver mReceiver = createDeviceFoundReceiver(deviceList);
+		
+		// Register the BroadcastReceiver to an Intent filter
+		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		registerReceiver(mReceiver, filter);
+		
+		Set<BluetoothDevice> allDevices = pairedDevices;
+		setVisualContents(mBluetoothAdapter, deviceList, allDevices);
+	}
+
+	private void enableDiscoverable() {
+		int discoverableDuration = 300;
+		Intent discoverableIntent = new
+				Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+				discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, discoverableDuration);
+		startActivity(discoverableIntent);
+	}
+
+	private BroadcastReceiver createDeviceFoundReceiver(
+			final ArrayAdapter<CharSequence> deviceList) {
+		final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				String action = intent.getAction();
+				// If the discovery process founds a device, add that device to array adapter
+				if(BluetoothDevice.ACTION_FOUND.equals(action)) {
+					BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+					deviceList.add(device.getName() + "\n" + device.getAddress());
+				}
+			}
+		};
+		return mReceiver;
+	}
+
+	private void setVisualContents(BluetoothAdapter mBluetoothAdapter,
+			final ArrayAdapter<CharSequence> deviceList,
+			Set<BluetoothDevice> allDevices) {
+		Spinner deviceListSpinner = new Spinner(this);
+    	deviceList.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    	deviceListSpinner.setAdapter(deviceList);
+    	
+    	Dialog dialog = new Dialog(this);
+    	dialog.setTitle("Available devices");
+    	
+    	LinearLayout overallLayout = createLinearLayout(LinearLayout.VERTICAL);
+    	
+    	View[] views = new View[] { deviceListSpinner, createSpinnerButtons(dialog, deviceListSpinner, allDevices, mBluetoothAdapter) };
+    	addViewsToLayout(views, overallLayout);
+    	dialog.setContentView(overallLayout);
+    	dialog.show();
+	}
+    
+    private void attemptConnect(BluetoothAdapter mBluetoothAdapter) {
+    	if(remoteDevice != null) {
+    		// Attempt to connect to the remote device
+    		ConnectionThread connect = new ConnectionThread(remoteDevice, mBluetoothAdapter);
+    		connect.run();
+    	}
+    }
+    
+    private LinearLayout createSpinnerButtons(Dialog dialog, Spinner spinner, 
+    		Set<BluetoothDevice> allDevices, BluetoothAdapter adapter) {
+    	LinearLayout layout = createLinearLayout(LinearLayout.HORIZONTAL);
+    	Button okButton = createOKButton(dialog, spinner, allDevices, adapter);
+    	Button cancelButton = createCancelButton(dialog);
+    	View[] views = new View[] { okButton, cancelButton };
+    	addViewsToLayout(views, layout);
+    	return layout;
+    }
+    
+    private Button createOKButton(final Dialog dialog, final Spinner spinner, 
+    		final Set<BluetoothDevice> allDevices, final BluetoothAdapter adapter) {
+		Button okButton = new Button(this);
+    	okButton.setText("OK");
+    	okButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				String[] textSplit = getSpinnerSelection(spinner).split("\n");
+				if(textSplit != null) {
+					String deviceAddress = textSplit[DEVICE_ADDRESS_INDEX];
+					for(BluetoothDevice device : allDevices) {
+						if(device.getAddress().equals(deviceAddress)) {
+							remoteDevice = device;
+							attemptConnect(adapter);
+							break;
+						}
+					}
+				}
+				dialog.dismiss();
+			}
+		});
+		return okButton;
+	}
+    
+    private Button createCancelButton(final Dialog dialog) {
+		Button cancelButton = new Button(this);
+    	cancelButton.setText("Cancel");
+    	cancelButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		return cancelButton;
+	}
+    
+    private String getSpinnerSelection(Spinner spinner) {
+    	return spinner.getSelectedItem().toString();
     }
     
     /*

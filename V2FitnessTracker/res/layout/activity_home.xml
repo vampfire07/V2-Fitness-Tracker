@@ -289,7 +289,32 @@
        	    	    android:onClick="calculateBMI"/>
        	    
        	</LinearLayout>
-        	    
+       	
+       	<LinearLayout android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="3dp"
+       		android:paddingBottom="3dp">
+       		
+       	    <Button android:layout_width="wrap_content"
+       	    	    android:layout_height="30dp"
+       	    	    android:paddingTop="3dp"
+       	    	    android:paddingBottom="3dp"
+       	    	    android:text="@string/home_bluetoothShare"
+       	    	    android:textColor="#FFFFFF"
+       	    	    android:textSize="10dp"
+       	    	    android:onClick="bluetoothShare"/>
+        
+        	<Button android:layout_width="wrap_content"
+       	    	    android:layout_height="30dp"
+       	    	    android:paddingTop="3dp"
+       	    	    android:paddingBottom="3dp"
+       	    	    android:text="@string/home_bluetoothListen"
+       	    	    android:textColor="#FFFFFF"
+       	    	    android:textSize="10dp"
+       	    	    android:onClick="listen"/>
+       	    
+      	</LinearLayout>
+       		    
     </LinearLayout>
     
 </ScrollView>

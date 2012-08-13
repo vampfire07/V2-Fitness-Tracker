@@ -1,9 +1,5 @@
 package com.example.entities;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -27,7 +23,13 @@ public class Food {
 	private User user;
 	
 	public Food() {
-		
+		// No-arg constructor used by ORMLite
+	}
+	
+	public Food(String name, String amount, int calories) {
+		this.name = name;
+		this.amount = amount;
+		this.calories = calories;
 	}
 	
 	public String getName() {

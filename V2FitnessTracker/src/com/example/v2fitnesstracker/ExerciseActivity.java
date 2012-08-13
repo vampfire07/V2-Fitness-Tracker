@@ -1,6 +1,6 @@
 package com.example.v2fitnesstracker;
 
-import java.sql.SQLException;
+import java.util.HashSet;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -32,6 +32,8 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 public class ExerciseActivity extends OrmLiteBaseActivity<DatabaseHelper> implements V2Activity {
 	
 	private User user;
+	
+	// Database Access Object (DAO)
 	private RuntimeExceptionDao<Exercise, Integer> dao;
 	
 	private final String FIELD_NAME = "NAME";
@@ -85,10 +87,11 @@ public class ExerciseActivity extends OrmLiteBaseActivity<DatabaseHelper> implem
     public void updateView() {
     	TableLayout exerciseLayout = (TableLayout)findViewById(R.id.exercise_exerciseLayout);
     	exerciseLayout.removeAllViews();
-    	
+    	user.setExerciseSet(new HashSet<Exercise>());
     	for(Exercise e : dao.queryForAll()) {
     		if(e.getUser().getId() == user.getId())
     			exerciseLayout.addView(createExerciseRow(e));
+    		user.getExerciseSet().add(e);
     	}
     }
     
@@ -288,9 +291,7 @@ public class ExerciseActivity extends OrmLiteBaseActivity<DatabaseHelper> implem
     	okButton.setText("OK");
     	okButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				Exercise exercise = new Exercise();
-				exercise.setName("");
-				exercise.setType(getExerciseType(spinner));
+				Exercise exercise = new Exercise("", getExerciseType(spinner), 0, 0);
 				exercise.setUser(user);
 				dao.create(exercise);
 				

@@ -1,7 +1,5 @@
 package com.example.tests;
 
-import java.util.HashSet;
-
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.view.View;
