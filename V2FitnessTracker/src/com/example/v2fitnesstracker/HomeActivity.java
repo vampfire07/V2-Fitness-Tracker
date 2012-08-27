@@ -1,8 +1,6 @@
 package com.example.v2fitnesstracker;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Set;
 
 import android.app.AlertDialog;
@@ -24,12 +22,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.bluetooth.AcceptThread;
 import com.example.bluetooth.ConnectionThread;
 import com.example.databases.DatabaseHelper;
-import com.example.entities.Exercise;
 import com.example.entities.User;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -48,14 +44,20 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dao = getHelper().getRuntimeUserDao();
-        int id = getIntent().getIntExtra("user_id", -1);
-        
-        for(User u : dao.queryForAll()) {
-        	if(u.getId() == id) user = u;
-        }
+        user = (User)getIntent().getSerializableExtra("user_extra");
+//        int id = getIntent().getIntExtra("user_id", -1);
+//        
+//        for(User u : dao.queryForAll()) {
+//        	if(u.getId() == id) user = u;
+//        }
         setContentView(R.layout.activity_home);
         initializeInformation();
         setNavigationButtons();
+    }
+    
+    public void facebookShare(View view) {
+    	Intent navigateIntent = new Intent(this, FacebookActivity.class);
+    	this.startActivity(navigateIntent);
     }
     
     /*
@@ -69,14 +71,14 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			return;
 		}
 		
-		if(!mBluetoothAdapter.isEnabled()) {
+//		if(!mBluetoothAdapter.isEnabled()) {
+//			mBluetoothAdapter.
 			/* Allow for the device to be discovered by Bluetooth-enabled devices for 300 seconds.
 			 * Also enables Bluetooth.
 			 */
 			enableDiscoverable();
-		}
-		AcceptThread acceptThread = new AcceptThread(mBluetoothAdapter);
-		acceptThread.run();
+//		}
+		new AcceptThread(mBluetoothAdapter).run();
     }
     
     public static void saveReceivedUser(User user) {
@@ -98,13 +100,6 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		if(mBluetoothAdapter == null) {
 			showAlertMessage("Your device does not support Bluetooth", true);
 			return;
-		}
-		
-		if(!mBluetoothAdapter.isEnabled()) {
-			/* Allow for the device to be discovered by Bluetooth-enabled devices for 300 seconds.
-			 * Also enables Bluetooth.
-			 */
-			enableDiscoverable();
 		}
 		
 		mBluetoothAdapter.startDiscovery();

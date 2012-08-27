@@ -45,12 +45,15 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     		return;
     	}
     	
+    	User user = null;
+    	
     	// Checks for an existing username
     	List<User> users = dao.queryForAll();
     	boolean exists = false;
     	boolean passwordMatches = false;
     	for(User u : users) {
     		if(u.getUsername().equalsIgnoreCase(username)) {
+    			user = u;
     			exists = true;
     			if(u.getPassword().equals(password)) passwordMatches = true;
     			break;
@@ -66,9 +69,11 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     		return;
     	}
     	
-    	// Adds the username and password elements' contents to the Intent
-    	addToIntent(loginIntent, R.id.username_input, USERNAME_PACKAGE);
-    	addToIntent(loginIntent,R.id.password_input, PASSWORD_PACKAGE);
+    	loginIntent.putExtra("user_extra", user);
+    	
+//    	// Adds the username and password elements' contents to the Intent
+//    	addToIntent(loginIntent, R.id.username_input, USERNAME_PACKAGE);
+//    	addToIntent(loginIntent,R.id.password_input, PASSWORD_PACKAGE);
     	
     	// Finishes this Activity and starts a new one
     	finish();

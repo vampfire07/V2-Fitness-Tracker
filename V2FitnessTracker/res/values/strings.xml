@@ -30,21 +30,22 @@
     <string name="home_usernameText">Username: </string>
     <string name="home_passwordText">Password: </string>
     <string name="home_changeText">Change</string>
-    <string name="whitespace_fifteen">               </string>
+    <string name="whitespace_fifteen"></string>
     <string name="home_BMIText">Body Mass Index (BMI)</string>
     <string name="home_indexText">Index: </string>
     <string name="home_classificationText">Classification: </string>
-    <string name="whitespace_twentyfive">                         </string>
+    <string name="whitespace_twentyfive"></string>
     <string name="home_calculateBMI">Calculate</string>
     <string name="home_ageText">Age: </string>
     <string name="home_heightText">Height: </string>
-    <string name="whitespace_five">     </string>
-    <string name="whitespace_seven">       </string>
+    <string name="whitespace_five"></string>
+    <string name="whitespace_seven"></string>
     <string name="home_feetText">ft.</string>
     <string name="home_inchesText">in.</string>
     <string name="home_weightText">Weight: </string>
     <string name="home_goalWeightText">Goal Weight: </string>
     <string name="home_update">Update</string>
+
     <string-array name="exercise_types">
         <item>Abs</item>
         <item>Biceps</item>
@@ -61,6 +62,7 @@
         <item>Run</item>
         <item>Other</item>
     </string-array>
+
     <string name="exercise_addExerciseButton">Add Exercise</string>
     <string name="exercise_header_name">Name</string>
     <string name="exercise_header_type">Type</string>
@@ -75,7 +77,16 @@
     <string name="journal_lock">Lock</string>
     <string name="journal_clear">Clear</string>
     <string name="journal_removeButton">Remove</string>
+
     <string-array name="paired_devices"></string-array>
+
     <string name="home_bluetoothShare">Share</string>
     <string name="home_bluetoothListen">Listen</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_facebook">Facebook</string>
+    <string name="home_facebookShare">Facebook Share</string>
+    <string name="facebook_logout">Sign Out</string>
+    <string name="facebook_post">Post to Wall</string>
+    <string name="facebook_clearCredentials">Clear Credentials</string>
+
 </resources>

@@ -14,7 +14,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public class User implements Serializable {
 	
-	private static final long serialVersionUID = 1018593460307835042L;
+	private static final long serialVersionUID = 5107430064665651183L;
 
 	@DatabaseField(generatedId = true)
 	private int id;

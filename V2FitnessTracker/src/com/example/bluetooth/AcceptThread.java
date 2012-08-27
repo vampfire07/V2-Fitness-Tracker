@@ -17,7 +17,7 @@ public class AcceptThread extends Thread {
 
 	private final BluetoothServerSocket serverSocket;
 	private InputStream in;
-	private final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+	private final UUID MY_UUID = UUID.fromString("6093fe00-8f3c-4419-8c42-228e447ea3a4");
 	
 	public AcceptThread(BluetoothAdapter adapter) {
 		BluetoothServerSocket temp = null;
@@ -27,6 +27,7 @@ public class AcceptThread extends Thread {
 			Log.w("ACCEPT THREAD", "Something went wrong while trying to listen for connections.");
 		}
 		serverSocket = temp;
+		return;
 	}
 	
 	public void run() {
@@ -38,6 +39,7 @@ public class AcceptThread extends Thread {
 				
 				ObjectInputStream ois = new ObjectInputStream(in);
 				HomeActivity.saveReceivedUser((User)ois.readObject());
+				break;
 			} catch(IOException e) {
 				break;
 			} catch (ClassNotFoundException e) {

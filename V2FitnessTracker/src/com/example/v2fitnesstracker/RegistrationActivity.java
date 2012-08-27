@@ -62,9 +62,12 @@ public class RegistrationActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// Stores the user into the database
 		userDao.create(user);
 		
-		// Adds the username, password and user id to the Intent
-		addExtraData(loginIntent, user);
+		
+//		// Adds the username, password and user id to the Intent
+//		addExtraData(loginIntent, user);
 
+		loginIntent.putExtra("user_extra", user);
+		
 		// Finishes this Activity and starts a new one
 		// finish();
 		startActivity(loginIntent);
@@ -135,7 +138,7 @@ public class RegistrationActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	public boolean isEmpty(int id) {
 		EditText edittext = (EditText) findViewById(id);
 		String content = edittext.getText().toString();
-		if (content == null || content.isEmpty()) {
+		if (content == null || content.length() == 0) {
 			return true;
 		}
 		return false;

@@ -1,8 +1,6 @@
 package com.example.bluetooth;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.UUID;
@@ -22,7 +20,7 @@ public class ConnectionThread extends Thread {
 	private final BluetoothAdapter adapter;
 	private OutputStream out;
 	private ObjectOutputStream oos;
-	private final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+	private final UUID MY_UUID = UUID.fromString("6093fe00-8f3c-4419-8c42-228e447ea3a4");
 	
 	private User user;
 

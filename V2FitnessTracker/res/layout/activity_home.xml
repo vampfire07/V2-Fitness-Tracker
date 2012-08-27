@@ -312,6 +312,15 @@
        	    	    android:textColor="#FFFFFF"
        	    	    android:textSize="10dp"
        	    	    android:onClick="listen"/>
+        	
+        	<Button android:layout_width="wrap_content"
+       	    	    android:layout_height="30dp"
+       	    	    android:paddingTop="3dp"
+       	    	    android:paddingBottom="3dp"
+       	    	    android:text="@string/home_facebookShare"
+       	    	    android:textColor="#FFFFFF"
+       	    	    android:textSize="10dp"
+       	    	    android:onClick="facebookShare"/>
        	    
       	</LinearLayout>
        		    
