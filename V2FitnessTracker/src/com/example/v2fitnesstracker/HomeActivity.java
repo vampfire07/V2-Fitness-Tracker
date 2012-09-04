@@ -32,6 +32,7 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements V2Activity {
 	
+	public static boolean FIRST_TIME_LOGGED_IN = true;
 	private static final int DEVICE_ADDRESS_INDEX = 1;
 	private BluetoothDevice remoteDevice;
 	
@@ -44,20 +45,22 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dao = getHelper().getRuntimeUserDao();
-        user = (User)getIntent().getSerializableExtra("user_extra");
-//        int id = getIntent().getIntExtra("user_id", -1);
-//        
-//        for(User u : dao.queryForAll()) {
-//        	if(u.getId() == id) user = u;
-//        }
+        initializeUser();
         setContentView(R.layout.activity_home);
         initializeInformation();
         setNavigationButtons();
     }
+
+	private void initializeUser() {
+		if(FIRST_TIME_LOGGED_IN) {
+        	user = (User)getIntent().getSerializableExtra("user_extra");
+        	FIRST_TIME_LOGGED_IN = false;
+        }
+	}
     
     public void facebookShare(View view) {
     	Intent navigateIntent = new Intent(this, FacebookActivity.class);
-    	this.startActivity(navigateIntent);
+    	this.startActivityForResult(navigateIntent, 1);
     }
     
     /*

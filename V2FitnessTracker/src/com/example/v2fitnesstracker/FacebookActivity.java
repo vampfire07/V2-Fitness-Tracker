@@ -16,6 +16,10 @@ import android.widget.Toast;
 
 import com.example.facebook.FacebookConnector;
 import com.example.facebook.SessionEvents;
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook;
+import com.facebook.android.Facebook.DialogListener;
+import com.facebook.android.FacebookError;
 
 public class FacebookActivity extends Activity {
 
@@ -27,44 +31,67 @@ public class FacebookActivity extends Activity {
 	private final Handler mFacebookHandler = new Handler();
 	private TextView loginStatus;
 	private FacebookConnector facebookConnector;
+	private Facebook facebook = new Facebook(FACEBOOK_APPID);
 
-    final Runnable mUpdateFacebookNotification = new Runnable() {
-        public void run() {
-        	Toast.makeText(getBaseContext(), "Facebook updated!", Toast.LENGTH_LONG).show();
-        }
-    };
+	final Runnable mUpdateFacebookNotification = new Runnable() {
+		public void run() {
+			Toast.makeText(getBaseContext(), "Facebook updated!",
+					Toast.LENGTH_LONG).show();
+		}
+	};
 
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_facebook);
-        this.facebookConnector = new FacebookConnector(FACEBOOK_APPID, this, getApplicationContext(), new String[] {FACEBOOK_PERMISSION});
-        
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_facebook);
 
-        loginStatus = (TextView)findViewById(R.id.facebook_login_status);
-        Button postButton = (Button) findViewById(R.id.facebook_btn_post);
-        Button clearCredentialsButton = (Button) findViewById(R.id.facebook_btn_clear_credentials);
-        
-        postButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-        		postMessage();
-            }
-        });
+		facebook.authorize(this, new DialogListener() {
+			@Override
+			public void onComplete(Bundle values) {
+			}
 
-        clearCredentialsButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	// Logs the User out of Facebook and updates the login status.
-            	clearCredentials();
-            	updateLoginStatus();
-            }
-        });
+			@Override
+			public void onFacebookError(FacebookError error) {
+			}
+
+			@Override
+			public void onError(DialogError e) {
+			}
+
+			@Override
+			public void onCancel() {
+			}
+		});
+
+		this.facebookConnector = new FacebookConnector(FACEBOOK_APPID, this,
+				getApplicationContext(), new String[] { FACEBOOK_PERMISSION });
+
+		loginStatus = (TextView) findViewById(R.id.facebook_login_status);
+		Button postButton = (Button) findViewById(R.id.facebook_btn_post);
+		Button clearCredentialsButton = (Button) findViewById(R.id.facebook_btn_clear_credentials);
+
+		postButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				postMessage();
+			}
+		});
+
+		clearCredentialsButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				// Logs the User out of Facebook and updates the login status.
+				clearCredentials();
+				updateLoginStatus();
+			}
+		});
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		this.facebookConnector.getFacebook().authorizeCallback(requestCode, resultCode, data);
+		super.onActivityResult(requestCode, resultCode, data);
+		facebook.authorizeCallback(requestCode, resultCode, data);
+		this.facebookConnector.getFacebook().authorizeCallback(requestCode,
+				resultCode, data);
 	}
-
 
 	@Override
 	protected void onResume() {
@@ -73,13 +100,13 @@ public class FacebookActivity extends Activity {
 	}
 
 	public void updateLoginStatus() {
-		loginStatus.setText("Logged into Facebook : " + facebookConnector.getFacebook().isSessionValid());
+		loginStatus.setText("Logged into Facebook : "
+				+ facebookConnector.getFacebook().isSessionValid());
 	}
-
 
 	private String getFacebookMsg() {
 		return MSG + " at " + new Date().toString();
-	}	
+	}
 
 	public void postMessage() {
 
@@ -95,7 +122,7 @@ public class FacebookActivity extends Activity {
 
 				@Override
 				public void onAuthFail(String error) {
-
+					Log.w("FACEBOOK_ACTIVITY", "Auth failed.");
 				}
 			};
 			SessionEvents.addAuthListener(listener);
@@ -107,13 +134,13 @@ public class FacebookActivity extends Activity {
 		Thread t = new Thread() {
 			public void run() {
 
-		    	try {
-		    		facebookConnector.postMessageOnWall(getFacebookMsg());
+				try {
+					facebookConnector.postMessageOnWall(getFacebookMsg());
 					mFacebookHandler.post(mUpdateFacebookNotification);
 				} catch (Exception ex) {
-					Log.e(TAG, "Error sending message.",ex);
+					Log.e(TAG, "Error sending message.", ex);
 				}
-		    }
+			}
 		};
 		t.start();
 	}

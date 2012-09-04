@@ -67,6 +67,9 @@ public class JournalActivity extends OrmLiteBaseActivity<DatabaseHelper> impleme
     public void updateView() {
     	LinearLayout overallLayout = (LinearLayout)(findViewById(R.id.journal_overallLayout));
     	overallLayout.removeViews(3, overallLayout.getChildCount() - 3);
+    	if(user.getJournal() == null) {
+    		user.setJournal(new Journal());
+    	}
     	user.getJournal().setEntrySet(new HashSet<Entry>());
     	for(Entry e : entryDao.queryForAll()) {
     		if(e.getJournal() == journal)

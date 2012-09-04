@@ -4,7 +4,7 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_login">Login</string>
     <string name="username_hint">Username</string>
-    <string name="login">Login</string>
+    <string name="login">LOGIN</string>
     <string name="title_activity_home">Home</string>
     <string name="welcome">Welcome, user!</string>
     <string name="password_hint">Password</string>
@@ -16,7 +16,7 @@
     <string name="registration_notice">Please fill in with your information.</string>
     <string name="registration_username">Username</string>
     <string name="registration_password">Password</string>
-    <string name="register">Register</string>
+    <string name="register">REGISTER</string>
     <string name="back">Back</string>
     <string name="title_activity_login_test">LoginTest</string>
     <string name="title_activity_exercise">Exercise</string>

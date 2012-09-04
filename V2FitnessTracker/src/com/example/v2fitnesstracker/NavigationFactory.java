@@ -29,6 +29,7 @@ public class NavigationFactory {
 	private void setOnClickLogoutButton(Button logout) {
 		logout.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				HomeActivity.FIRST_TIME_LOGGED_IN = true;
 				navigate(Pages.LOGIN);
 			}
 		});
