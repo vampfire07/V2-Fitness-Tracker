@@ -62,14 +62,10 @@ public class RegistrationActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// Stores the user into the database
 		userDao.create(user);
 		
-		
-//		// Adds the username, password and user id to the Intent
-//		addExtraData(loginIntent, user);
-
 		loginIntent.putExtra("user_extra", user);
 		
 		// Finishes this Activity and starts a new one
-		// finish();
+		finish();
 		startActivity(loginIntent);
 	}
 	
@@ -82,13 +78,6 @@ public class RegistrationActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		startActivity(backToLogin);
 	}
 
-	// Adds the username, password and user id to the Intent
-	private void addExtraData(Intent loginIntent, User user) {
-		addToIntent(loginIntent, R.id.user_username, USERNAME_PACKAGE);
-		addToIntent(loginIntent, R.id.user_password, PASSWORD_PACKAGE);
-		loginIntent.putExtra("user_id", user.getId());
-	}
-	
 	// Checks for duplicate usernames
 	private boolean checkDuplicateUsername(String username) {
 		for(User u : userDao.queryForAll()) {
@@ -106,6 +95,8 @@ public class RegistrationActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		Journal journal = new Journal();
 		journal.setUser(user);
 		journalDao.create(journal);
+		user.setJournal(journal);
+		journalDao.update(journal);
 		return user;
 	}
 

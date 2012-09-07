@@ -41,6 +41,8 @@
 	    	    android:hint="@string/username_hint"
 	    	    android:typeface="monospace"
 	    	    android:textSize="25dp"
+	    	    android:textColor="#00FF00"
+	    	    android:textColorHint="#00FF00"
 	    	    android:maxLength="15"/>
 	    	<!-- Password -->
 	    	<EditText android:id="@+id/password_input"
@@ -52,6 +54,8 @@
                 android:hint="@string/password_hint"
                 android:typeface="monospace"
                 android:textSize="25dp"
+                android:textColor="#00FF00"
+                android:textColorHint="#00FF00"
                 android:maxLength="15"/>
 	    	<LinearLayout android:layout_width="match_parent"
 	    	    android:layout_height="wrap_content"

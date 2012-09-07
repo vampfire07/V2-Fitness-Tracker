@@ -18,13 +18,12 @@
      
 	        <TextView android:id="@+id/facebook_login_status"
 	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"/>
+	            android:layout_height="wrap_content"
+	            android:textColor="#00FF00"/>
 	        
 	        <Button android:id="@+id/facebook_btn_post"
            		android:layout_width="wrap_content"
      	    	android:layout_height="30dp"
-	       	    android:paddingTop="3dp"
-	       	    android:paddingBottom="3dp"
 	       	    android:text="@string/facebook_post"
 	       	    android:textColor="#FF0000"
 	       	    android:textSize="10dp"/>
@@ -32,8 +31,6 @@
 	        <Button android:id="@+id/facebook_btn_clear_credentials"
            		android:layout_width="wrap_content"
      	    	android:layout_height="30dp"
-	       	    android:paddingTop="3dp"
-	       	    android:paddingBottom="3dp"
 	       	    android:text="@string/facebook_clearCredentials"
 	       	    android:textColor="#FF0000"
 	       	    android:textSize="10dp"/>

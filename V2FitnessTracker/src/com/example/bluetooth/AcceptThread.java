@@ -34,7 +34,7 @@ public class AcceptThread extends Thread {
 		BluetoothSocket socket = null;
 		while(true) {
 			try{
-				socket = serverSocket.accept();
+				socket = serverSocket.accept(10);
 				in = socket.getInputStream();
 				
 				ObjectInputStream ois = new ObjectInputStream(in);

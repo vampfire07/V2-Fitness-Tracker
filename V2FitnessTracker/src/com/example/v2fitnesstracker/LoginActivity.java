@@ -71,10 +71,6 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     	
     	loginIntent.putExtra("user_extra", user);
     	
-//    	// Adds the username and password elements' contents to the Intent
-//    	addToIntent(loginIntent, R.id.username_input, USERNAME_PACKAGE);
-//    	addToIntent(loginIntent,R.id.password_input, PASSWORD_PACKAGE);
-    	
     	// Finishes this Activity and starts a new one
     	finish();
     	startActivity(loginIntent);

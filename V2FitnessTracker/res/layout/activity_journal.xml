@@ -21,7 +21,7 @@
        	    <Button android:layout_width="90dp"
        	    android:layout_height="30dp"
        	    android:text="@string/journal_newEntry"
-       	    android:textColor="#FFFFFF"
+       	    android:textColor="#FF0000"
        	    android:textSize="12dp"
        	    android:onClick="newEntry"/>
        	    
@@ -31,25 +31,6 @@
        	    android:layout_width="match_parent"
        	    android:layout_height="wrap_content"
        	    android:orientation="vertical">
-       	    
-    	    <TextView android:id="@+id/journal_initialDate"
-     	        android:layout_width="match_parent"
-     	        android:layout_height="wrap_content"
-     	        android:text=""/>
-      	    
-			<EditText
-			    android:id="@+id/journal"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:background="#FFFFFF"
-			    android:hint="@string/journal_hint"
-			    android:inputType="textNoSuggestions"
-			    android:paddingBottom="10dp"
-			    android:paddingLeft="10dp"
-			    android:paddingRight="10dp"
-			    android:paddingTop="10dp"
-			    android:singleLine="false"
-			    android:textSize="14dp" />
 			
        	</LinearLayout>
        	

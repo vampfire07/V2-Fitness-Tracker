@@ -15,7 +15,7 @@
        	<Button android:layout_width="110dp"
        	    android:layout_height="30dp"
        	    android:text="@string/nutrition_addFoodButton"
-       	    android:textColor="#FFFFFF"
+       	    android:textColor="#FF0000"
        	    android:textSize="12dp"
        	    android:onClick="addRow"/>
        	
@@ -27,19 +27,19 @@
        	    android:layout_height="wrap_content"
        	    android:layout_weight="1"
        	    android:text="@string/nutrition_header_name"
-       	    android:textColor="#FF0000"/>
+       	    android:textColor="#FFFFFF"/>
        	    
        	    <TextView android:layout_width="match_parent"
        	    android:layout_height="wrap_content"
        	    android:layout_weight="1"
        	    android:text="@string/nutrition_header_amount"
-       	    android:textColor="#FF0000"/>
+       	    android:textColor="#FFFFFF"/>
        	    
        	    <TextView android:layout_width="match_parent"
        	    android:layout_height="wrap_content"
        	    android:layout_weight="1"
        	    android:text="@string/nutrition_header_calories"
-       	    android:textColor="#FF0000"/>
+       	    android:textColor="#FFFFFF"/>
        	    
        	</LinearLayout>
        	

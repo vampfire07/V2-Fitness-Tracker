@@ -333,7 +333,7 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
     }
     
     // Calculates BMI Index and returns the result in one decimal place.
-    public double calculateBMIIndex() {
+    public static double calculateBMIIndex() {
     	double index = 0;
     	int heightInInches = (user.getHeightFeet() * 12) + user.getHeightInches();
     	if(heightInInches != 0) {
@@ -349,7 +349,7 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
      * Categorizes BMI Classification based on the BMI Index 
      * and returns the result as a String.
      */
-    public String calculateBMIClassification(double index) {
+    public static String calculateBMIClassification(double index) {
     	String classification = "";
     	if(index < 18.5) classification = "Underweight";
     	else if(index >= 18.5 && index < 25) classification = "Normal";

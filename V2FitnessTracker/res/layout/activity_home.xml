@@ -43,7 +43,7 @@
        	    	    android:paddingBottom="3dp"
        	    	    android:paddingTop="3dp"
        	    	    android:text="@string/home_changeText"
-       	    	    android:textColor="#FFFFFF"
+       	    	    android:textColor="#FF0000"
        	    	    android:textSize="10dp"
        	    	    android:onClick="changeUsername"/>
        	    	       	        
@@ -73,7 +73,7 @@
        	    	    android:paddingTop="3dp"
        	    	    android:paddingBottom="3dp"
        	    	    android:text="@string/home_changeText"
-       	    	    android:textColor="#FFFFFF"
+       	    	    android:textColor="#FF0000"
        	    	    android:textSize="10dp"
        	    	    android:onClick="changePassword"/>
        	    	
@@ -212,7 +212,7 @@
        	    android:paddingTop="3dp"
        	    android:paddingBottom="3dp"
        	    android:text="@string/home_update"
-       	    android:textColor="#FFFFFF"
+       	    android:textColor="#FF0000"
        	    android:textSize="10dp"
        	    android:onClick="update"/>
        	
@@ -284,7 +284,7 @@
        	    	    android:paddingTop="3dp"
        	    	    android:paddingBottom="3dp"
        	    	    android:text="@string/home_calculateBMI"
-       	    	    android:textColor="#FFFFFF"
+       	    	    android:textColor="#FF0000"
        	    	    android:textSize="10dp"
        	    	    android:onClick="calculateBMI"/>
        	    
@@ -300,7 +300,7 @@
        	    	    android:paddingTop="3dp"
        	    	    android:paddingBottom="3dp"
        	    	    android:text="@string/home_bluetoothShare"
-       	    	    android:textColor="#FFFFFF"
+       	    	    android:textColor="#FF0000"
        	    	    android:textSize="10dp"
        	    	    android:onClick="bluetoothShare"/>
         
@@ -309,7 +309,7 @@
        	    	    android:paddingTop="3dp"
        	    	    android:paddingBottom="3dp"
        	    	    android:text="@string/home_bluetoothListen"
-       	    	    android:textColor="#FFFFFF"
+       	    	    android:textColor="#FF0000"
        	    	    android:textSize="10dp"
        	    	    android:onClick="listen"/>
         	
@@ -318,7 +318,7 @@
        	    	    android:paddingTop="3dp"
        	    	    android:paddingBottom="3dp"
        	    	    android:text="@string/home_facebookShare"
-       	    	    android:textColor="#FFFFFF"
+       	    	    android:textColor="#FF0000"
        	    	    android:textSize="10dp"
        	    	    android:onClick="facebookShare"/>
        	    

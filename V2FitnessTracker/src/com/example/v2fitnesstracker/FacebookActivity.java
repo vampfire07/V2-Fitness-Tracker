@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Date;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +18,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.entities.User;
 import com.example.facebook.FacebookConnector;
 import com.example.facebook.SessionEvents;
 import com.facebook.android.DialogError;
@@ -26,7 +31,6 @@ public class FacebookActivity extends Activity {
 	private static final String FACEBOOK_APPID = "278245685621907";
 	private static final String FACEBOOK_PERMISSION = "publish_stream";
 	private static final String TAG = "V2FitnessTracker";
-	private static final String MSG = "Message from V2FitnessTracker";
 
 	private final Handler mFacebookHandler = new Handler();
 	private TextView loginStatus;
@@ -35,7 +39,7 @@ public class FacebookActivity extends Activity {
 
 	final Runnable mUpdateFacebookNotification = new Runnable() {
 		public void run() {
-			Toast.makeText(getBaseContext(), "Facebook updated!",
+			Toast.makeText(getBaseContext(), "Posted to Wall!",
 					Toast.LENGTH_LONG).show();
 		}
 	};
@@ -104,20 +108,41 @@ public class FacebookActivity extends Activity {
 				+ facebookConnector.getFacebook().isSessionValid());
 	}
 
-	private String getFacebookMsg() {
-		return MSG + " at " + new Date().toString();
+	private StringBuilder getFacebookMsg() {
+		StringBuilder msg = new StringBuilder();
+		User user = HomeActivity.user;
+		double userBMIIndex = HomeActivity.calculateBMIIndex();
+		String userBMIClassification = HomeActivity.calculateBMIClassification(userBMIIndex);
+		
+		if(userBMIClassification.equals("Underweight")) {
+			msg.append(user.getUsername() + " is a little lightweight lately. Time to get the right nutrients!\n");
+		}
+		else if(userBMIClassification.equals("Normal")) {
+			msg.append(user.getUsername() + " is on the right track to a fit body!\n");
+		}
+		else if(userBMIClassification.equals("Overweight")) {
+			msg.append(user.getUsername() + " may be taking more than the body can handle. Be careful!\n");
+		}
+		else if(userBMIClassification.equals("Obese")) {
+			msg.append(user.getUsername() + " needs to reassess his/her goals and plans. V2 Fitness Tracker can help!\n");
+		}
+		msg.append("Weight until goal reached: " + (user.getGoalWeight() - user.getWeight() + " lbs.\n"));
+		msg.append("Posted from V2 Fitness Tracker at " + new Date() + "\n");
+		return msg;
 	}
 
 	public void postMessage() {
 
 		if (facebookConnector.getFacebook().isSessionValid()) {
 			postMessageInThread();
+			return;
 		} else {
 			SessionEvents.AuthListener listener = new SessionEvents.AuthListener() {
 
 				@Override
 				public void onAuthSucceed() {
 					postMessageInThread();
+					return;
 				}
 
 				@Override
@@ -135,7 +160,26 @@ public class FacebookActivity extends Activity {
 			public void run() {
 
 				try {
-					facebookConnector.postMessageOnWall(getFacebookMsg());
+					facebookConnector.postMessageOnWall(getFacebookMsg().toString());
+//					try {
+//						JSONObject attachment = new JSONObject();
+//				        attachment.put("message", "V2 Fitness Tracker");
+//				        attachment.put("name", HomeActivity.user.getUsername());
+//						
+//				        JSONObject media = new JSONObject();
+//				        media.put("type", "image");
+//				        media.put("src", R.drawable.logo);
+//				        media.put("href", Utils.s(R.string.url_dotzmag));
+//				        attachment.put("media", new JSONArray().put(media));
+//
+//				        Bundle params = new Bundle();
+//				        params.putString("attachment", attachment.toString());
+//				        mFacebook.dialog(mActivity, "stream.publish", params, new PostPhotoDialogListener());
+//				        //mAsyncRunner.request("me/feed", params, "POST", new WallPostRequestListener(), null);
+//
+//				    } catch (JSONException e) {
+//				        Log.e("FACEBOOK", e.getLocalizedMessage(), e);
+//				    }
 					mFacebookHandler.post(mUpdateFacebookNotification);
 				} catch (Exception ex) {
 					Log.e(TAG, "Error sending message.", ex);

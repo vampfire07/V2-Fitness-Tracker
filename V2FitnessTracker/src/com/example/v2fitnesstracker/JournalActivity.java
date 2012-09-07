@@ -35,9 +35,9 @@ public class JournalActivity extends OrmLiteBaseActivity<DatabaseHelper> impleme
 	private RuntimeExceptionDao<Journal, Integer> journalDao;
 	private RuntimeExceptionDao<Entry, Integer> entryDao;
 	
-	public final int ID_POSITION = 0;
-	public final int ISLOCKED_POSITION = 1;
-	public final int ENTRY_POSITION = 3; 
+	public static final int ID_POSITION = 0;
+	public static final int ISLOCKED_POSITION = 1;
+	public static final int ENTRY_POSITION = 3; 
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,9 @@ public class JournalActivity extends OrmLiteBaseActivity<DatabaseHelper> impleme
 
 	private void setJournal() {
 		for(Journal j : journalDao.queryForAll()) {
-			if(j.getUser() == user) journal = j;
+			if(j.getId() == user.getJournal().getId()) {
+				journal = j;
+			}
 		}
 	}
 
@@ -65,16 +67,18 @@ public class JournalActivity extends OrmLiteBaseActivity<DatabaseHelper> impleme
     
     // Updates the View for every journal entry that the User has
     public void updateView() {
-    	LinearLayout overallLayout = (LinearLayout)(findViewById(R.id.journal_overallLayout));
-    	overallLayout.removeViews(3, overallLayout.getChildCount() - 3);
+    	LinearLayout journalLayout = (LinearLayout)(findViewById(R.id.journal_journalLayout));
+    	journalLayout.removeAllViews();
     	if(user.getJournal() == null) {
-    		user.setJournal(new Journal());
+    		return;
     	}
     	user.getJournal().setEntrySet(new HashSet<Entry>());
     	for(Entry e : entryDao.queryForAll()) {
-    		if(e.getJournal() == journal)
-    			overallLayout.addView(createEntryRow(e));
-    		user.getJournal().getEntrySet().add(e);
+    		if(e.getJournal() == null) return;
+    		if(e.getJournal().getId() == user.getJournal().getId()) {
+    			user.getJournal().getEntrySet().add(e);
+    			journalLayout.addView(createEntryRow(e));
+    		}
     	}
     }
     
@@ -98,18 +102,27 @@ public class JournalActivity extends OrmLiteBaseActivity<DatabaseHelper> impleme
     public void newEntry(View view) {
     	LinearLayout overallLayout = ((LinearLayout)findViewById(R.id.journal_overallLayout));
     	Date dateCreated = new Date();
-    	Entry newEntry = new Entry();
-    	newEntry.setDate(dateCreated);
-    	newEntry.setJournal(journal);
-    	journalDao.update(journal);
+    	Entry newEntry = initializeEntry(dateCreated);
     	entryDao.create(newEntry);
+    	journalDao.update(journal);
     	
+    	// Create a LinearLayout and add the components to it.
     	LinearLayout entryLayout = createLinearLayout(LinearLayout.VERTICAL);
-    	View[] views = new View[] { createHiddenIdView(newEntry), createIsJournalLockedView(newEntry), 
-    			createDateTextView(dateCreated), createNewEntryView(dateCreated, ""), createButtonView() };
+    	View[] views = new View[] { createHiddenIdView(newEntry),
+    								createIsJournalLockedView(newEntry), 
+    								createDateTextView(dateCreated), 
+    								createNewEntryView(dateCreated, ""), 
+    								createButtonView() };
     	addViewsToLayout(views, entryLayout);
     	overallLayout.addView(entryLayout);
     }
+
+	private Entry initializeEntry(Date dateCreated) {
+		Entry newEntry = new Entry();
+    	newEntry.setDate(dateCreated);
+    	newEntry.setJournal(journal);
+		return newEntry;
+	}
     
     /*
      * Returns a LinearLayout containing
@@ -144,9 +157,7 @@ public class JournalActivity extends OrmLiteBaseActivity<DatabaseHelper> impleme
     
     private Entry findEntryById(int id) throws SQLException {
     	for(Entry e : entryDao.queryForAll()) {
-    		if(e.getJournal().getId() == journal.getId()) {
-    			if(e.getId() == id) return e;
-    		}
+    		if(e.getId() == id) return e;
     	}
     	return null;
     }
@@ -249,6 +260,7 @@ public class JournalActivity extends OrmLiteBaseActivity<DatabaseHelper> impleme
     	entry.setHint("Write a message here...");
     	entry.setText(content);
     	entry.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+    	entry.setLines(5);
     	setEntryListener(entry);
     	return entry;
     }

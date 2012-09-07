@@ -35,15 +35,15 @@ public final class R {
         public static final int redline=0x7f02000c;
     }
     public static final class id {
-        public static final int container=0x7f090020;
+        public static final int container=0x7f09001e;
         public static final int exercise_exerciseLayout=0x7f090002;
         public static final int exercise_header=0x7f090001;
         public static final int exercise_overallLayout=0x7f090000;
         public static final int facebook_btn_clear_credentials=0x7f090006;
         public static final int facebook_btn_post=0x7f090005;
         public static final int facebook_login_status=0x7f090004;
-        public static final int footer=0x7f090018;
-        public static final int header=0x7f090017;
+        public static final int footer=0x7f090016;
+        public static final int header=0x7f090015;
         public static final int home_BMI=0x7f090010;
         public static final int home_BMIclassification=0x7f090012;
         public static final int home_BMIindex=0x7f090011;
@@ -57,26 +57,24 @@ public final class R {
         public static final int home_userCredentials=0x7f090007;
         public static final int home_username=0x7f090008;
         public static final int home_weight=0x7f09000e;
-        public static final int journal=0x7f090016;
-        public static final int journal_initialDate=0x7f090015;
         public static final int journal_journalLayout=0x7f090014;
         public static final int journal_overallLayout=0x7f090013;
-        public static final int login_button=0x7f09001b;
-        public static final int logo=0x7f090023;
-        public static final int menu_settings=0x7f090029;
-        public static final int navigation_exercise=0x7f090025;
-        public static final int navigation_home=0x7f090024;
-        public static final int navigation_journal=0x7f090027;
-        public static final int navigation_logout=0x7f090028;
-        public static final int navigation_nutrition=0x7f090026;
-        public static final int nutrition_foodLayout=0x7f09001f;
-        public static final int nutrition_header=0x7f09001e;
-        public static final int nutrition_overallLayout=0x7f09001d;
-        public static final int password_input=0x7f09001a;
-        public static final int register_button=0x7f09001c;
-        public static final int user_password=0x7f090022;
-        public static final int user_username=0x7f090021;
-        public static final int username_input=0x7f090019;
+        public static final int login_button=0x7f090019;
+        public static final int logo=0x7f090021;
+        public static final int menu_settings=0x7f090027;
+        public static final int navigation_exercise=0x7f090023;
+        public static final int navigation_home=0x7f090022;
+        public static final int navigation_journal=0x7f090025;
+        public static final int navigation_logout=0x7f090026;
+        public static final int navigation_nutrition=0x7f090024;
+        public static final int nutrition_foodLayout=0x7f09001d;
+        public static final int nutrition_header=0x7f09001c;
+        public static final int nutrition_overallLayout=0x7f09001b;
+        public static final int password_input=0x7f090018;
+        public static final int register_button=0x7f09001a;
+        public static final int user_password=0x7f090020;
+        public static final int user_username=0x7f09001f;
+        public static final int username_input=0x7f090017;
     }
     public static final class layout {
         public static final int activity_exercise=0x7f030000;

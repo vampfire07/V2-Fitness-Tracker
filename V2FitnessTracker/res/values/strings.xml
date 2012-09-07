@@ -14,10 +14,10 @@
     <string name="title_section1">Section 1</string>
     <string name="title_activity_registration">Registration</string>
     <string name="registration_notice">Please fill in with your information.</string>
-    <string name="registration_username">Username</string>
-    <string name="registration_password">Password</string>
+    <string name="registration_username">Username:</string>
+    <string name="registration_password">Password:</string>
     <string name="register">REGISTER</string>
-    <string name="back">Back</string>
+    <string name="back">BACK</string>
     <string name="title_activity_login_test">LoginTest</string>
     <string name="title_activity_exercise">Exercise</string>
     <string name="title_activity_nutrition">Nutrition</string>
