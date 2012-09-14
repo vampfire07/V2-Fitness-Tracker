@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Date;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -111,7 +107,7 @@ public class FacebookActivity extends Activity {
 	private StringBuilder getFacebookMsg() {
 		StringBuilder msg = new StringBuilder();
 		User user = HomeActivity.user;
-		double userBMIIndex = HomeActivity.calculateBMIIndex();
+		double userBMIIndex = HomeActivity.calculateBMIIndex(HomeActivity.user);
 		String userBMIClassification = HomeActivity.calculateBMIClassification(userBMIIndex);
 		
 		if(userBMIClassification.equals("Underweight")) {

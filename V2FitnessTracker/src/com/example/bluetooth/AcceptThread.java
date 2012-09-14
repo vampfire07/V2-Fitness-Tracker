@@ -5,13 +5,14 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.UUID;
 
-import com.example.entities.User;
-import com.example.v2fitnesstracker.HomeActivity;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.util.Log;
+
+import com.example.entities.User;
+import com.example.v2fitnesstracker.HomeActivity;
 
 public class AcceptThread extends Thread {
 
@@ -34,9 +35,8 @@ public class AcceptThread extends Thread {
 		BluetoothSocket socket = null;
 		while(true) {
 			try{
-				socket = serverSocket.accept(10);
+				socket = serverSocket.accept(10000);
 				in = socket.getInputStream();
-				
 				ObjectInputStream ois = new ObjectInputStream(in);
 				HomeActivity.saveReceivedUser((User)ois.readObject());
 				break;

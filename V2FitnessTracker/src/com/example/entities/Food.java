@@ -1,11 +1,15 @@
 package com.example.entities;
 
+import java.io.Serializable;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 
 @DatabaseTable
-public class Food {
+public class Food implements Serializable {
+
+	private static final long serialVersionUID = 3201594887230070317L;
 
 	@DatabaseField(generatedId = true)
 	private int id;

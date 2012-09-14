@@ -4,19 +4,15 @@ import java.util.HashSet;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -35,10 +31,6 @@ public class ExerciseActivity extends OrmLiteBaseActivity<DatabaseHelper> implem
 	
 	// Database Access Object (DAO)
 	private RuntimeExceptionDao<Exercise, Integer> dao;
-	
-	private final String FIELD_NAME = "NAME";
-	private final String FIELD_SETS = "SETS";
-	private final String FIELD_REPS = "REPS";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,64 +91,15 @@ public class ExerciseActivity extends OrmLiteBaseActivity<DatabaseHelper> implem
     	TableRow row = new TableRow(this);
     	row.setBackgroundColor(Color.WHITE);
     	
-    	final EditText exerciseName = createExerciseNameView(exercise);
-    	final Spinner exerciseType = createExerciseTypeView(exercise);
-    	final EditText exerciseSets = createSetsView(exercise);
-    	final EditText exerciseReps = createRepsView(exercise);
-    	setFieldListeners(exerciseName, exerciseType, exerciseSets, exerciseReps);
+    	TextView exerciseName = createExerciseNameView(exercise);
+    	TextView exerciseType = createExerciseTypeView(exercise);
+    	TextView exerciseSets = createSetsView(exercise);
+    	TextView exerciseReps = createRepsView(exercise);
     	
     	View[] views = new View[] { createHiddenIdView(exercise), exerciseName, exerciseType,
-    			exerciseSets, exerciseReps, createRemoveButtonView() };
+    			exerciseSets, exerciseReps, createEditButtonView(exercise), createRemoveButtonView() };
     	addViewsToLayout(views, row);
     	return row;
-    }
-
-	private void setFieldListeners(final EditText exerciseName, final Spinner exerciseType, 
-			final EditText exerciseSets, final EditText exerciseReps) {
-		setEditTextChangedListener(exerciseName, FIELD_NAME);
-    	setSpinnerListener(exerciseType);
-    	setEditTextChangedListener(exerciseSets, FIELD_SETS);
-    	setEditTextChangedListener(exerciseReps, FIELD_REPS);
-	}
-    
-    private void setSpinnerListener(final Spinner spinner) {
-    	spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			// Sets the listener that triggers when the selected item changes
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
-		    	findExerciseById(findId(spinner)).setType(spinner.getSelectedItem().toString());
-			}
-			public void onNothingSelected(AdapterView<?> arg0) {
-				spinner.setSelection(0);
-			}
-		});
-    }
-    
-    private void setEditTextChangedListener(final EditText text, final String field) {
-    	text.addTextChangedListener(new TextWatcher() {
-    		public void afterTextChanged(Editable s) {
-				try {
-					Exercise exercise = findExerciseById(findId(text));
-					if(field.equals(FIELD_NAME))
-						exercise.setName(text.getText().toString());
-					else if(field.equals(FIELD_SETS))
-						exercise.setSets(Integer.parseInt(text.getText().toString()));
-					else if(field.equals(FIELD_REPS))
-						exercise.setReps(Integer.parseInt(text.getText().toString()));
-					dao.update(exercise);
-				}
-				catch(NullPointerException e) {
-				}
-				catch(NumberFormatException e) {
-				}
-			}
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-			}
-    	});
     }
     
     private TextView createHiddenIdView(Exercise exercise) {
@@ -164,6 +107,21 @@ public class ExerciseActivity extends OrmLiteBaseActivity<DatabaseHelper> implem
     	id.setVisibility(View.GONE);
     	return id;
     }
+    
+    private Button createEditButtonView(final Exercise exercise) {
+    	final Context context = this;
+		Button editButton = new Button(this);
+		editButton.setText("Edit");
+    	editButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent navigateIntent = new Intent(context, ViewExerciseActivity.class);
+				navigateIntent.putExtra("exercise_extra", exercise);
+				startActivity(navigateIntent);
+				finish();
+			}
+		});
+    	return editButton;
+	}
 
 	private Button createRemoveButtonView() {
 		Button removeButton = new Button(this);
@@ -176,51 +134,37 @@ public class ExerciseActivity extends OrmLiteBaseActivity<DatabaseHelper> implem
     	return removeButton;
 	}
 	
-	private int findId(View view) {
-		LinearLayout viewParent = (LinearLayout)view.getParent();
-		View idView = viewParent.getChildAt(0);
-		// The id field is a TextView located at index 0 of the layout.
-		if(idView instanceof TextView) {
-			return Integer.parseInt(((TextView) idView).getText().toString());
-		}
-		return -1;
-	}
-
-	private EditText createExerciseNameView(Exercise exercise) {
-		EditText exerciseName = ActivityFactory.createEditText(this, 12, "Name");
+	private TextView createExerciseNameView(Exercise exercise) {
+		TextView exerciseName = ActivityFactory.createTextView(this, 14, exercise.getName());
+		exerciseName.setPadding(3, 0, 3, 0);
+		if(exercise.getName().equals("")) exerciseName.setText("Unnamed");
+		if(exercise.getName().length() > 10) {
+    		exerciseName.setText(exercise.getName().substring(0, 5) + "...");
+    	}
 		exerciseName.setSingleLine(true);
-    	exerciseName.setText(exercise.getName());
 		return exerciseName;
 	}
 
-	private Spinner createExerciseTypeView(Exercise exercise) {
-		final Spinner exerciseType = createSpinner(R.array.exercise_types);
-    	exerciseType.setSelection(getExercisePosition(exercise, exerciseType));
+	private TextView createExerciseTypeView(Exercise exercise) {
+		TextView exerciseType = ActivityFactory.createTextView(this, 14, exercise.getType());
+		exerciseType.setPadding(3, 0, 3, 0);
+		exerciseType.setSingleLine(true);
 		return exerciseType;
 	}
 
-	private EditText createRepsView(Exercise exercise) {
-		final EditText reps = ActivityFactory.createEditText(this, 12, "Reps");
-    	reps.setInputType(InputType.TYPE_CLASS_NUMBER);
-    	reps.setText(exercise.getReps() + "");
-		return reps;
+	private TextView createRepsView(Exercise exercise) {
+		TextView exerciseReps = ActivityFactory.createTextView(this, 14, exercise.getReps() + "");
+		exerciseReps.setPadding(3, 0, 3, 0);
+		exerciseReps.setSingleLine(true);
+		return exerciseReps;
 	}
 
-	private EditText createSetsView(Exercise exercise) {
-		final EditText sets = ActivityFactory.createEditText(this, 12, "Sets");
-    	sets.setInputType(InputType.TYPE_CLASS_NUMBER);
-    	sets.setText(exercise.getSets() + "");
-		return sets;
+	private TextView createSetsView(Exercise exercise) {
+		TextView exerciseSets = ActivityFactory.createTextView(this, 14, exercise.getSets() + "");
+		exerciseSets.setPadding(3, 0, 3, 0);
+		exerciseSets.setSingleLine(true);
+		return exerciseSets;
 	}
-    
-    private int getExercisePosition(Exercise exercise, Spinner exerciseType) {
-    	for(int i = 0; i < exerciseType.getAdapter().getCount(); i++) {
-    		if(exerciseType.getAdapter().getItem(i).toString().equalsIgnoreCase(exercise.getType())) {
-    			return i;
-    		}
-    	}
-    	return -1;
-    }
 
     // Shows an AlertDialog with the message passed in the parameter
 	public void showAlertMessage(String message, boolean cancelable) {

@@ -53,16 +53,18 @@ public class RegistrationActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			return;
 		}
 
-		// Checks for duplicate usernames
-		if(checkDuplicateUsername(username)) return;
-		
-		// Creates a new instance of user
-		User user = createNewUser(username, password);
-		
-		// Stores the user into the database
-		userDao.create(user);
-		
-		loginIntent.putExtra("user_extra", user);
+		if(!LoginActivity.DEMO_MODE) {
+			// Checks for duplicate usernames
+			if(checkDuplicateUsername(username)) return;
+			
+			// Creates a new instance of user
+			User user = createNewUser(username, password);
+			
+			// Stores the user into the database
+			userDao.create(user);
+			
+			loginIntent.putExtra("user_extra", user);
+		}
 		
 		// Finishes this Activity and starts a new one
 		finish();

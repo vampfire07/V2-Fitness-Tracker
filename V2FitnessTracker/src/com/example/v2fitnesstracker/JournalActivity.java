@@ -259,8 +259,8 @@ public class JournalActivity extends OrmLiteBaseActivity<DatabaseHelper> impleme
     	entry.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
     	entry.setHint("Write a message here...");
     	entry.setText(content);
-    	entry.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-    	entry.setLines(5);
+    	entry.setInputType(InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE);
+    	entry.setHorizontalScrollBarEnabled(true);
     	setEntryListener(entry);
     	return entry;
     }

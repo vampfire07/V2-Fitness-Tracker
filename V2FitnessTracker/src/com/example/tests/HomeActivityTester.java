@@ -91,7 +91,7 @@ public class HomeActivityTester extends ActivityInstrumentationTestCase2<HomeAct
 		user.setWeight(135);
 		user.setHeightFeet(5);
 		user.setHeightInches(6);
-		double index = activity.calculateBMIIndex();
+		double index = activity.calculateBMIIndex(user);
 		String classification = activity.calculateBMIClassification(index);
 		// Index should be 21.8
 		assertEquals(index, 21.8);
@@ -99,7 +99,7 @@ public class HomeActivityTester extends ActivityInstrumentationTestCase2<HomeAct
 		assertEquals(classification, "Normal");
 		
 		user.setHeightFeet(6);
-		index = activity.calculateBMIIndex();
+		index = activity.calculateBMIIndex(user);
 		classification = activity.calculateBMIClassification(index);
 		// Index should be 15.6
 		assertEquals(index, 15.6);
@@ -108,7 +108,7 @@ public class HomeActivityTester extends ActivityInstrumentationTestCase2<HomeAct
 		
 		user.setHeightFeet(5);
 		user.setHeightInches(0);
-		index = activity.calculateBMIIndex();
+		index = activity.calculateBMIIndex(user);
 		classification = activity.calculateBMIClassification(index);
 		// Index should be 26.4
 		assertEquals(index, 26.4);
@@ -116,7 +116,7 @@ public class HomeActivityTester extends ActivityInstrumentationTestCase2<HomeAct
 		assertEquals(classification, "Overweight");
 		
 		user.setHeightFeet(4);
-		index = activity.calculateBMIIndex();
+		index = activity.calculateBMIIndex(user);
 		classification = activity.calculateBMIClassification(index);
 		// Index should be 41.2
 		assertEquals(index, 41.2);

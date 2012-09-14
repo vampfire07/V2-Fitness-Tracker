@@ -22,11 +22,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.bluetooth.AcceptThread;
 import com.example.bluetooth.ConnectionThread;
 import com.example.databases.DatabaseHelper;
 import com.example.entities.User;
+import com.example.services.FitnessService;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
@@ -35,6 +37,7 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	public static boolean FIRST_TIME_LOGGED_IN = true;
 	private static final int DEVICE_ADDRESS_INDEX = 1;
 	private BluetoothDevice remoteDevice;
+	private boolean fitnessService_started = false;
 	
 	public static User user;
 	
@@ -57,6 +60,17 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
         	FIRST_TIME_LOGGED_IN = false;
         }
 	}
+	
+	public void askFitnessCoach(View view) {
+		// Starts the FitnessService allowing other applications to use it.
+		if(!fitnessService_started) {
+			startService(new Intent(this, FitnessService.class));
+			fitnessService_started = true;
+		}
+		FitnessService service = new FitnessService(user);
+		showAlertMessage(service.returnMessage(), true);
+		fitnessService_started = service.SERVICE_STATUS_ON;
+	}
     
     public void facebookShare(View view) {
     	Intent navigateIntent = new Intent(this, FacebookActivity.class);
@@ -74,13 +88,12 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			return;
 		}
 		
-//		if(!mBluetoothAdapter.isEnabled()) {
-//			mBluetoothAdapter.
+		if(!mBluetoothAdapter.isEnabled()) {
 			/* Allow for the device to be discovered by Bluetooth-enabled devices for 300 seconds.
 			 * Also enables Bluetooth.
 			 */
 			enableDiscoverable();
-//		}
+		}
 		new AcceptThread(mBluetoothAdapter).run();
     }
     
@@ -166,7 +179,11 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
     	
     	LinearLayout overallLayout = createLinearLayout(LinearLayout.VERTICAL);
     	
-    	View[] views = new View[] { deviceListSpinner, createSpinnerButtons(dialog, deviceListSpinner, allDevices, mBluetoothAdapter) };
+    	View[] views = new View[] { deviceListSpinner,
+    								createSpinnerButtons(dialog,
+    													deviceListSpinner,
+    													allDevices,
+    													mBluetoothAdapter) };
     	addViewsToLayout(views, overallLayout);
     	dialog.setContentView(overallLayout);
     	dialog.show();
@@ -196,6 +213,13 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
     	okButton.setText("OK");
     	okButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				establishRemoteCommunication(dialog, spinner, allDevices, adapter);
+			}
+
+			private void establishRemoteCommunication(final Dialog dialog,
+					final Spinner spinner,
+					final Set<BluetoothDevice> allDevices,
+					final BluetoothAdapter adapter) {
 				String[] textSplit = getSpinnerSelection(spinner).split("\n");
 				if(textSplit != null) {
 					String deviceAddress = textSplit[DEVICE_ADDRESS_INDEX];
@@ -315,7 +339,11 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	    	user.setHeightFeet(Integer.parseInt(((EditText)findViewById(R.id.home_heightFeet)).getText().toString()));
 	    	user.setHeightInches(Integer.parseInt(((EditText)findViewById(R.id.home_heightInches)).getText().toString()));
 	    	dao.update(user);
-	    	showAlertMessage("Information has been updated", true);
+	    	Toast.makeText(this, "Information has been updated", Toast.LENGTH_LONG).show();
+	    	// TO-DO: Allow Facebook status update
+	    	if(user.getWeight() == user.getGoalWeight()) {
+	    		showAlertMessage("Congratulations! You have reached your goal", true);
+	    	}
     	}
     	catch(NumberFormatException e) {
     		showAlertMessage("Make sure the information are filled in correctly.", true);
@@ -327,13 +355,13 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
      *  then displays the result in a text field.
      */
     public void calculateBMI(View view) {
-    	double index = calculateBMIIndex();
+    	double index = calculateBMIIndex(user);
     	((EditText)findViewById(R.id.home_BMIindex)).setText(index + "");
     	((EditText)findViewById(R.id.home_BMIclassification)).setText(calculateBMIClassification(index));
     }
     
     // Calculates BMI Index and returns the result in one decimal place.
-    public static double calculateBMIIndex() {
+    public static double calculateBMIIndex(User user) {
     	double index = 0;
     	int heightInInches = (user.getHeightFeet() * 12) + user.getHeightInches();
     	if(heightInInches != 0) {
@@ -376,7 +404,7 @@ public class HomeActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
     public void showAlertMessage(String message, boolean cancelable) {
     	AlertDialog ad = new AlertDialog.Builder(this).create();
 		ad.setCancelable(cancelable);
-		ad.setMessage(message);
+		ad.setMessage(message + " Press back button.");
 		ad.show();
     }
     

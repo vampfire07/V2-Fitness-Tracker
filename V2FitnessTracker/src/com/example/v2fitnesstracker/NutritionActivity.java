@@ -3,16 +3,15 @@ package com.example.v2fitnesstracker;
 import java.util.HashSet;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -30,10 +29,6 @@ public class NutritionActivity extends OrmLiteBaseActivity<DatabaseHelper> imple
 	
 	// Database Access Object (DAO)
 	private RuntimeExceptionDao<Food, Integer> dao;
-	
-	private final String FIELD_NAME = "NAME";
-	private final String FIELD_AMOUNT = "AMOUNT";
-	private final String FIELD_CALORIES = "CALORIES";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,33 +92,36 @@ public class NutritionActivity extends OrmLiteBaseActivity<DatabaseHelper> imple
     	TableRow row = new TableRow(this);
     	row.setBackgroundColor(Color.WHITE);
     	
-    	final EditText foodName = createFoodNameView(food);
-    	final EditText foodAmount = createFoodAmountView(food);
-    	final EditText foodCalories = createFoodCaloriesView(food);
-    	setFieldListeners(foodName, foodAmount, foodCalories);
+    	TextView foodName = createFoodNameView(food);
+    	TextView foodAmount = createFoodAmountView(food);
+    	TextView foodCalories = createFoodCaloriesView(food);
     	
     	View[] views = new View[] { createHiddenIdView(food), foodName, foodAmount,
-    			foodCalories, createRemoveButtonView() };
+    			foodCalories, createEditButtonView(food), createRemoveButtonView() };
     	addViewsToLayout(views, row);
     	return row;
     }
     
-    private EditText createFoodNameView(Food food) {
-    	EditText foodName = ActivityFactory.createEditText(this, 12, "Name");
+    private TextView createFoodNameView(Food food) {
+    	TextView foodName = ActivityFactory.createTextView(this, 14, "Unnamed");
+    	foodName.setPadding(3, 0, 3, 0);
+		if(food.getName().equals("")) foodName.setText("Unnamed");
+		else foodName.setText(food.getName());
 		foodName.setSingleLine(true);
-    	foodName.setText(food.getName());
 		return foodName;
     }
     
-    private EditText createFoodAmountView(Food food) {
-    	EditText foodAmount = ActivityFactory.createEditText(this, 12, "Amount");
+    private TextView createFoodAmountView(Food food) {
+    	TextView foodAmount = ActivityFactory.createTextView(this, 14, "Not specified");
+    	foodAmount.setPadding(3, 0, 3, 0);
 		foodAmount.setSingleLine(true);
     	foodAmount.setText(food.getAmount());
 		return foodAmount;
     }
     
-    private EditText createFoodCaloriesView(Food food) {
-    	EditText foodCalories = ActivityFactory.createEditText(this, 12, "Calories");
+    private TextView createFoodCaloriesView(Food food) {
+    	TextView foodCalories = ActivityFactory.createTextView(this, 14, "");
+    	foodCalories.setPadding(3, 0, 3, 0);
 		foodCalories.setSingleLine(true);
 		foodCalories.setInputType(InputType.TYPE_CLASS_NUMBER);
     	foodCalories.setText(food.getCalories() + "");
@@ -136,6 +134,21 @@ public class NutritionActivity extends OrmLiteBaseActivity<DatabaseHelper> imple
     	return id;
     }
     
+    private Button createEditButtonView(final Food food) {
+    	final Context context = this;
+		Button editButton = new Button(this);
+		editButton.setText("Edit");
+    	editButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent navigateIntent = new Intent(context, ViewFoodActivity.class);
+				navigateIntent.putExtra("food_extra", food);
+				startActivity(navigateIntent);
+				finish();
+			}
+		});
+    	return editButton;
+	}
+    
     private Button createRemoveButtonView() {
 		Button removeButton = new Button(this);
 		removeButton.setText("Remove");
@@ -145,51 +158,6 @@ public class NutritionActivity extends OrmLiteBaseActivity<DatabaseHelper> imple
 			}
 		});
     	return removeButton;
-	}
-    
-    private void setFieldListeners(final EditText foodName, final EditText foodAmount, 
-    		final EditText foodCalories) {
-		setEditTextChangedListener(foodName, FIELD_NAME);
-    	setEditTextChangedListener(foodAmount, FIELD_AMOUNT);
-    	setEditTextChangedListener(foodCalories, FIELD_CALORIES);
-	}
-    
-    private void setEditTextChangedListener(final EditText text, final String field) {
-    	text.addTextChangedListener(new TextWatcher() {
-    		public void afterTextChanged(Editable s) {
-				try {
-					Food food = findFoodById(findId(text));
-					if(field.equals(FIELD_NAME))
-						food.setName(text.getText().toString());
-					else if(field.equals(FIELD_AMOUNT))
-						food.setAmount(text.getText().toString());
-					else if(field.equals(FIELD_CALORIES))
-						food.setCalories(Integer.parseInt(text.getText().toString()));
-					dao.update(food);
-				}
-				catch(NullPointerException e) {
-				}
-				catch(NumberFormatException e) {
-				}
-			}
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-			}
-    	});
-    }
-    
-    // Returns the id of the Food contained in the View.
-    private int findId(View view) {
-		LinearLayout viewParent = (LinearLayout)view.getParent();
-		View idView = viewParent.getChildAt(0);
-		// The id field is a TextView located at index 0 of the layout.
-		if(idView instanceof TextView) {
-			return Integer.parseInt(((TextView) idView).getText().toString());
-		}
-		return -1;
 	}
     
     public void setNavigationButtons() {

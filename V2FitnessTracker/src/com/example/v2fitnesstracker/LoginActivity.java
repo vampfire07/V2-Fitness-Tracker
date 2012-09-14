@@ -19,6 +19,9 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	
 	public final static String USERNAME_PACKAGE = "com.example.v2fitnesstracker.USERNAME";
 	public final static String PASSWORD_PACKAGE = "com.example.v2fitnesstracker.PASSWORD";
+	
+	// Boolean for DEMO version on emulator
+	public static boolean DEMO_MODE = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,29 +50,30 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     	
     	User user = null;
     	
-    	// Checks for an existing username
-    	List<User> users = dao.queryForAll();
-    	boolean exists = false;
-    	boolean passwordMatches = false;
-    	for(User u : users) {
-    		if(u.getUsername().equalsIgnoreCase(username)) {
-    			user = u;
-    			exists = true;
-    			if(u.getPassword().equals(password)) passwordMatches = true;
-    			break;
+    	if(!DEMO_MODE) {
+    		// Checks for an existing username
+    		List<User> users = dao.queryForAll();
+    		boolean exists = false;
+    		boolean passwordMatches = false;
+    		for(User u : users) {
+    			if(u.getUsername().equalsIgnoreCase(username)) {
+    				user = u;
+    				exists = true;
+    				if(u.getPassword().equals(password)) passwordMatches = true;
+    				break;
+    			}
     		}
+    		// If username does not exist, do not log in
+    		if(!exists) {
+    			showErrorMessage("Username does not exist");
+    			return;
+    		}
+    		else if(exists && !passwordMatches) {
+    			showErrorMessage("Password does not match the username");
+    			return;
+    		}
+    		loginIntent.putExtra("user_extra", user);
     	}
-    	// If username does not exist, do not log in
-    	if(!exists) {
-    		showErrorMessage("Username does not exist");
-    		return;
-    	}
-    	else if(exists && !passwordMatches) {
-    		showErrorMessage("Password does not match the username");
-    		return;
-    	}
-    	
-    	loginIntent.putExtra("user_extra", user);
     	
     	// Finishes this Activity and starts a new one
     	finish();

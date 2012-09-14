@@ -88,5 +88,10 @@
     <string name="facebook_logout">Sign Out</string>
     <string name="facebook_post">Post to Wall</string>
     <string name="facebook_clearCredentials">Clear Credentials</string>
+    <string name="title_activity_view_exercise">View Exercise</string>
+    <string name="title_activity_view_food">View Food</string>
+    <string name="fitnessService_started">Fitness coach is now waking up...</string>
+    <string name="fitnessService_stopped">Fitness coach is going back to sleep.</string>
+    <string name="home_askFitnessCoach">Ask Coach</string>
 
 </resources>

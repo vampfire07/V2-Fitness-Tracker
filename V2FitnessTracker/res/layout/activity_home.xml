@@ -36,7 +36,8 @@
         			android:hint="@string/whitespace_fifteen"
         			android:maxLength="20"
         			android:inputType="textNoSuggestions"
-        			android:textColor="#FF0000"/>
+        			android:textColor="#FF0000"
+        			android:singleLine="true"/>
        	    	
        	    	<Button android:layout_width="wrap_content"
        	    	    android:layout_height="30dp"
@@ -66,7 +67,8 @@
         			android:hint="@string/whitespace_fifteen"
         			android:maxLength="20"
         			android:inputType="textNoSuggestions"
-        			android:textColor="#FF0000"/>
+        			android:textColor="#FF0000"
+        			android:singleLine="true"/>
        	    	       	        
        	    	<Button android:layout_width="wrap_content"
        	    	    android:layout_height="30dp"
@@ -106,7 +108,8 @@
         			android:layout_height="wrap_content"
         			android:hint="@string/whitespace_seven"
         			android:maxLength="3"
-        			android:inputType="number"/>
+        			android:inputType="number"
+        			android:singleLine="true"/>
        	 	   
        	    </LinearLayout>
        	    
@@ -131,7 +134,8 @@
         		android:paddingRight="3dp"
         		android:hint="@string/whitespace_seven"
         		android:maxLength="1"
-        		android:inputType="number"/>
+        		android:inputType="number"
+        		android:singleLine="true"/>
        	 	   
        	 	   <TextView android:layout_width="wrap_content"
         		android:layout_height="wrap_content"
@@ -148,7 +152,8 @@
         		android:paddingRight="3dp"
         		android:hint="@string/whitespace_seven"
         		android:maxLength="2"
-        		android:inputType="number"/>
+        		android:inputType="number"
+        		android:singleLine="true"/>
        	        
        	 	   <TextView android:layout_width="wrap_content"
         		android:layout_height="wrap_content"
@@ -180,7 +185,8 @@
         		android:layout_height="wrap_content"
         		android:hint="@string/whitespace_seven"
         		android:maxLength="3"
-        		android:inputType="number"/>
+        		android:inputType="number"
+        		android:singleLine="true"/>
        	 	   
        	</LinearLayout>	
        	
@@ -202,7 +208,8 @@
         		android:layout_height="wrap_content"
         		android:hint="@string/whitespace_seven"
         		android:maxLength="3"
-        		android:inputType="number"/>
+        		android:inputType="number"
+        		android:singleLine="true"/>
        	 	   
        	</LinearLayout>	
        	
@@ -252,7 +259,8 @@
         			android:enabled="false"
         			android:hint="@string/whitespace_fifteen"
         			android:maxLength="4"
-        			android:textColor="#FF0000"/>
+        			android:textColor="#FF0000"
+        			android:singleLine="true"/>
        	        
        	    </LinearLayout>
        	    
@@ -274,7 +282,8 @@
         			android:layout_height="wrap_content"
         			android:enabled="false"
         			android:hint="@string/whitespace_twentyfive"
-        			android:textColor="#FF0000"/>
+        			android:textColor="#FF0000"
+        			android:singleLine="true"/>
        	        
        	    </LinearLayout>
        	    
@@ -321,7 +330,15 @@
        	    	    android:textColor="#FF0000"
        	    	    android:textSize="10dp"
        	    	    android:onClick="facebookShare"/>
-       	    
+        	
+       	    <Button android:layout_width="wrap_content"
+       	    	    android:layout_height="30dp"
+       	    	    android:paddingTop="3dp"
+       	    	    android:paddingBottom="3dp"
+       	    	    android:text="@string/home_askFitnessCoach"
+       	    	    android:textColor="#FF0000"
+       	    	    android:textSize="10dp"
+       	    	    android:onClick="askFitnessCoach"/>
       	</LinearLayout>
        		    
     </LinearLayout>
